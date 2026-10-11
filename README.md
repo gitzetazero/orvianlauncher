@@ -1,55 +1,38 @@
 # Orvian Launcher
 
-Launcher de escritorio para Windows del servidor privado **Orvian**. Con un solo botón instala Java, Minecraft
-1.20.1, Forge 47.4.23 y el modpack de la comunidad, lo mantiene actualizado y lanza el juego.
+El launcher oficial del servidor **Orvian** para Windows. Con un solo botón instala todo lo necesario (Java, Minecraft 1.20.1, Forge y el modpack), lo mantiene actualizado y abre el juego.
 
-Hecho con Electron, React, Vite y TypeScript. Interfaz en español. Pensado para un grupo pequeño de jugadores, no es un launcher genérico.
+## Cómo usarlo
 
-## Funciones
+1. Descarga el instalador desde la sección de [Releases](../../releases) e instálalo.
+2. Inicia sesión con tu cuenta de Microsoft (necesitas Minecraft Java).
+3. Pulsa **Instalar** y espera a que termine. Solo se hace la primera vez.
+4. Pulsa **Jugar**, o **Jugar en el servidor** para entrar directamente.
 
-- **Cuenta Microsoft:** la sesión se renueva sola; los tokens se guardan cifrados con `safeStorage`.
-- **Instalación:** Java 17, Minecraft, Forge, librerías y assets, con progreso por pasos y bytes.
-- **Modpack:** se descarga de GitHub Releases con verificación SHA-256 y escritura atómica. Se conservan las configuraciones del jugador.
-- **Sin conexión:** con el modpack instalado se puede jugar sin red.
-- **Servidor:** estado en vivo (jugadores, latencia) y botón «Jugar en el servidor».
-- **Mods:** lista de instalados e instalación desde Modrinth y CurseForge.
-- **Soporte:** resumen de fallos del juego y «Copiar diagnóstico» (sin tokens).
-- **Autoactualización:** el launcher se actualiza solo, nunca mientras se juega.
-- **Admin:** panel para publicar versiones del modpack, visible solo para cuentas autorizadas.
+> Windows puede mostrar un aviso de SmartScreen porque el instalador no está firmado. Pulsa «Más información» y luego «Ejecutar de todos modos».
 
-## Desarrollo
+## Qué hace
 
-Requiere Node.js 22+. Empaquetar el instalador (`dist:win`) requiere Windows; el resto funciona en cualquier sistema.
+- Instala y actualiza el modpack automáticamente, verificando cada archivo. Tus configuraciones se conservan.
+- Muestra si el servidor está en línea, cuántos jugadores hay y las novedades de cada versión.
+- Permite instalar mods extra desde Modrinth y CurseForge.
+- Si ya está instalado, puedes jugar sin conexión.
+- Se actualiza solo, y nunca mientras juegas.
+- Si el juego se cierra por un error, te muestra qué pasó. El botón «Copiar diagnóstico» genera un texto (sin datos personales) para pedir ayuda.
+
+## Privacidad
+
+Tu sesión se guarda cifrada en tu equipo y los registros no contienen tokens. Todo se guarda en `%APPDATA%/Orvian`.
+
+## Para desarrolladores
+
+Requiere Node.js 22+.
 
 ```bash
-npm ci               # instala dependencias
-npm run dev          # abre el launcher con recarga en caliente
-npm run lint         # ESLint + TypeScript
-npm test             # tests unitarios y de integración (Vitest)
-npm run test:e2e     # pruebas de extremo a extremo (Playwright + Electron)
-npm run build        # compila main y renderer
-npm run dist:win     # genera el instalador NSIS en release/
+npm ci            # instalar dependencias
+npm run dev       # abrir el launcher en modo desarrollo
+npm test          # tests
+npm run dist:win  # generar el instalador (requiere Windows)
 ```
 
-Variables opcionales (solo en desarrollo, se ignoran en versiones empaquetadas; ver `electron/config.ts`):
-`ORVIAN_DATA_DIR`, `ORVIAN_MANIFEST_URL`, `ORVIAN_PACK_REPO`, `ORVIAN_SERVER`, `ORVIAN_SPLASH_MS`.
-
-## Estructura
-
-```
-electron/    proceso main (Node): toda la lógica; preload.ts es el puente hacia la interfaz
-src/shared/  código puro compartido: tipos, errores, manifest, estados
-src/ui/      interfaz React
-e2e/, tests/ pruebas
-```
-
-## Publicar
-
-- **Launcher:** crear un tag `vX.Y.Z` igual a la versión de `package.json`. El workflow `release.yml` sube un **borrador** que hay que publicar a mano.
-- **Modpack:** desde el panel Admin del launcher.
-
-Pasos completos y pruebas manuales en [`RELEASING.md`](RELEASING.md).
-
-## Limitaciones
-
-- El instalador **no está firmado**: SmartScreen avisará («Más información › Ejecutar de todos modos»).
+Más detalles sobre cómo publicar versiones en [`RELEASING.md`](RELEASING.md).
