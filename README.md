@@ -34,10 +34,6 @@ npm run dist:win     # genera el instalador NSIS en release/
 Variables opcionales (solo en desarrollo, se ignoran en versiones empaquetadas; ver `electron/config.ts`):
 `ORVIAN_DATA_DIR`, `ORVIAN_MANIFEST_URL`, `ORVIAN_PACK_REPO`, `ORVIAN_SERVER`, `ORVIAN_SPLASH_MS`.
 
-## Configuración
-
-Las constantes del producto (versiones de Minecraft y Forge, repositorio del modpack, servidor, cuentas admin) están en `electron/config.ts`.
-
 ## Estructura
 
 ```
@@ -47,8 +43,6 @@ src/ui/      interfaz React
 e2e/, tests/ pruebas
 ```
 
-Los datos del usuario viven en `%APPDATA%/Orvian` (cuenta cifrada, ajustes, Java propio, instancia del juego y `launcher/logs/`, sin tokens).
-
 ## Publicar
 
 - **Launcher:** crear un tag `vX.Y.Z` igual a la versión de `package.json`. El workflow `release.yml` sube un **borrador** que hay que publicar a mano.
@@ -56,8 +50,6 @@ Los datos del usuario viven en `%APPDATA%/Orvian` (cuenta cifrada, ajustes, Java
 
 Pasos completos y pruebas manuales en [`RELEASING.md`](RELEASING.md).
 
-## Limitaciones conocidas
+## Limitaciones
 
 - El instalador **no está firmado**: SmartScreen avisará («Más información › Ejecutar de todos modos»).
-- El historial de git contiene rutas y nombres de jugador antiguos de `pack/`; habría que purgarlo antes de hacer público el repositorio.
-- CurseForge se consulta mediante un proxy no oficial (`api.curse.tools`); si desaparece, Modrinth sigue funcionando.
