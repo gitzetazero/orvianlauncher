@@ -47,5 +47,7 @@ jobs:
       # after the smoke test described in RELEASING.md.
       - name: Build installer and upload to a draft release
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          # The workflow's own token is enough to create the draft in this same repository
+          # (permissions: contents: write above); no personal token or secret is needed.
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm run dist:win:publish
