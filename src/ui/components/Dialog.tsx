@@ -1,5 +1,7 @@
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react'
-import { Button } from './Button'
+import { X } from 'lucide-react'
+import { Button, IconButton } from './Button'
+import { cx } from './cx'
 import { Field } from './Field'
 
 interface DialogProps {
@@ -9,9 +11,13 @@ interface DialogProps {
   /** Esc and a click on the backdrop call this; ignored when `dismissible` is false. */
   onClose: () => void
   dismissible?: boolean
-  size?: 'sm' | 'md'
+  size?: 'sm' | 'md' | 'lg' | 'xl'
+  /** Large centred icon above the title, for moments that need weight (a crash, a warning). */
+  icon?: ReactNode
+  tone?: 'default' | 'danger'
   children?: ReactNode
-  actions: ReactNode
+  actions?: ReactNode
+  className?: string
 }
 
 /**
@@ -19,7 +25,7 @@ interface DialogProps {
  * handles Esc and returns focus to the control that opened it. The element marked
  * `data-autofocus` (or the first control) gets the initial focus.
  */
-export function Dialog({ open, title, description, onClose, dismissible = true, size = 'sm', children, actions }: DialogProps) {
+export function Dialog({ open, title, description, onClose, dismissible = true, size = 'sm', icon, tone = 'default', children, actions, className }: DialogProps) {
   const ref = useRef<HTMLDialogElement>(null)
   const titleId = useId()
   const descriptionId = useId()
@@ -38,7 +44,7 @@ export function Dialog({ open, title, description, onClose, dismissible = true, 
   return (
     <dialog
       ref={ref}
-      className={`dialog dialog-${size}`}
+      className={cx('dialog', `dialog-${size}`, icon ? 'dialog-centered' : undefined, tone === 'danger' && 'dialog-danger', className)}
       aria-labelledby={titleId}
       aria-describedby={description ? descriptionId : undefined}
       onCancel={(event) => {
@@ -67,10 +73,16 @@ export function Dialog({ open, title, description, onClose, dismissible = true, 
     >
       {open && (
         <div className="dialog-content">
+          {dismissible && (
+            <IconButton label="Cerrar" className="dialog-close" onClick={onClose}>
+              <X size={16} strokeWidth={1.75} aria-hidden="true" />
+            </IconButton>
+          )}
+          {icon && <div className="dialog-icon" aria-hidden="true">{icon}</div>}
           <h2 id={titleId} className="dialog-title">{title}</h2>
           {description && <div id={descriptionId} className="dialog-description">{description}</div>}
           {children}
-          <div className="dialog-actions">{actions}</div>
+          {actions && <div className="dialog-actions">{actions}</div>}
         </div>
       )}
     </dialog>

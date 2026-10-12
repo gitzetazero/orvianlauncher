@@ -1,7 +1,7 @@
 {
   "name": "orvian-launcher",
   "productName": "Orvian Launcher",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "private": true,
   "description": "Orvian Launcher",
   "main": "dist-electron/electron/main.js",
@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
+    "@fontsource-variable/figtree": "^5.3.0",
     "@playwright/test": "^1.63.0",
     "@types/node": "^24.9.0",
     "@types/react": "^18.3.18",
@@ -44,6 +45,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.13.0",
     "rcedit": "^5.0.2",
+    "skinview3d": "^3.4.2",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.71.0",
     "vite": "^6.0.7",
@@ -87,13 +89,14 @@
       "installerIcon": "public/logo.ico",
       "uninstallerIcon": "public/logo.ico",
       "shortcutName": "Orvian Launcher",
+      "include": "build/installer.nsh",
       "runAfterFinish": true,
       "deleteAppDataOnUninstall": false
     },
     "publish": [
       {
         "provider": "github",
-        "owner": "zzyren",
+        "owner": "gitzetazero",
         "repo": "orvianlauncher",
         "releaseType": "draft"
       }

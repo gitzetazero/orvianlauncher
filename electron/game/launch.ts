@@ -3,6 +3,8 @@ import { join } from 'node:path'
 import { createMinecraftProcessWatcher, createQuickPlayMultiplayer, launch, Version } from '@xmcl/core'
 import { OrvianError, toPayload, userMessage, type OrvianErrorPayload } from '../../src/shared/errors'
 import { hasInterruptedSync } from '../../src/shared/integrity'
+import { parseJvmArgs } from '../../src/shared/gameOptions'
+import type { GameOptions } from '../../src/shared/launcher-state'
 import { compareVersions, type OrvianManifest } from '../../src/shared/manifest'
 import { redactSecrets } from '../../src/shared/redact'
 import type { AccountInfo } from '../auth'
@@ -35,6 +37,7 @@ export interface GameDeps {
   getSession(): Promise<{ account: AccountInfo; stale: boolean }>
   getManifest(): Promise<OrvianManifest | null>
   getRamGb(): Promise<number>
+  getGameOptions(): Promise<GameOptions>
   emit(event: ProgressEvent): void
   onPackSynced(version: string): void
   onGameExit(result: ExitResult): void
@@ -179,6 +182,11 @@ async function startGame(deps: GameDeps, args: StartArgs): Promise<void> {
 
   runtime.playing = true
   runtime.killedByLauncher = false
+  const gameOptions = await deps.getGameOptions()
+  const jvm = parseJvmArgs(gameOptions.jvmArgs)
+  if (!jvm.ok) log.warn('[Launcher] Argumentos de Java ignorados: %s', jvm.error)
+  const size = gameOptions.width && gameOptions.height ? { width: gameOptions.width, height: gameOptions.height } : {}
+
   let proc: ChildProcess
   try {
     proc = await launch({
@@ -193,6 +201,8 @@ async function startGame(deps: GameDeps, args: StartArgs): Promise<void> {
       // userType is left unset on purpose: @xmcl/core then sends `msa`, which is what Microsoft accounts use.
       launcherName: 'Orvian',
       launcherBrand: deps.appVersion,
+      resolution: gameOptions.fullscreen || size.width ? { ...size, fullscreen: gameOptions.fullscreen ? true : undefined } : undefined,
+      extraJVMArgs: jvm.ok && jvm.args.length > 0 ? jvm.args : undefined,
       quickPlayMultiplayer: args.options.quickPlay ? createQuickPlayMultiplayer(config.server.address, config.server.port) : undefined
     })
   } catch (err) {

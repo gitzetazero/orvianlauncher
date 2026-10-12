@@ -32,6 +32,8 @@ export interface RunningLauncher {
 export interface LauncherOptions {
   /** Files to create inside the data folder before the first start, by relative path. */
   seed?: Record<string, string>
+  /** Start with a test profile signed in (development builds only), to reach the screens behind sign-in. */
+  signedIn?: boolean
 }
 
 async function startManifestServer(): Promise<{ server: Server; url: string }> {
@@ -80,7 +82,8 @@ export const test = base.extend<{ launch: (options?: LauncherOptions) => Promise
             ORVIAN_MANIFEST_URL: url,
             // A repository that does not exist: the news fall back to the manifest's changelog, offline or not
             ORVIAN_PACK_REPO: 'orvian-e2e/does-not-exist',
-            ORVIAN_SPLASH_MS: '200'
+            ORVIAN_SPLASH_MS: '200',
+            ...(options.signedIn ? { ORVIAN_TEST_ACCOUNT: 'Tester:00000000000040008000000000000001' } : {})
           }
         })
         const isMain = (page: Page): boolean => page.url().includes('index.html') && !page.url().includes('#tray')

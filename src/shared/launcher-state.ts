@@ -113,6 +113,36 @@ export interface UpdaterState {
   message?: string
 }
 
+/** Launch options the player can change in the advanced settings. */
+export interface GameOptions {
+  /** Window size in pixels; null keeps Minecraft's default. */
+  width: number | null
+  height: number | null
+  fullscreen: boolean
+  /** Extra JVM arguments, one string as the player typed it. Memory is set by the RAM slider instead. */
+  jvmArgs: string
+}
+
+export const DEFAULT_GAME_OPTIONS: GameOptions = { width: null, height: null, fullscreen: false, jvmArgs: '' }
+
+/** Play time measured by the launcher since this feature exists; never estimated. */
+export interface PlayStats {
+  lastPlayedAt: number | null
+  totalSeconds: number
+}
+
+export type NotificationKind = 'pack' | 'install' | 'crash' | 'mods' | 'launcher' | 'account' | 'skin'
+
+/** Something that happened in the launcher, kept so the player can see it later. */
+export interface LauncherNotification {
+  id: string
+  kind: NotificationKind
+  title: string
+  body: string
+  at: number
+  read: boolean
+}
+
 export interface LauncherState {
   phase: LauncherPhase
   appVersion: string
@@ -128,6 +158,9 @@ export interface LauncherState {
     changelog: string[]
   }
   settings: { ramGb: number; ramMin: number; ramMax: number }
+  gameOptions: GameOptions
+  stats: PlayStats
+  notifications: LauncherNotification[]
   server: ServerStatus
   news: NewsItem[]
   launcherUpdate: UpdaterState

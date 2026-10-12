@@ -48,6 +48,16 @@ describe('resetLauncherData', () => {
     }
   })
 
+  it("leaves Electron's own files in the shared folder alone", async () => {
+    await put('Cache/Cache_Data/data_0', 'browser cache')
+    await put('Local Storage/leveldb/000003.log')
+    await resetLauncherData(root, { deleteWorlds: false })
+    await resetLauncherData(root, { deleteWorlds: true })
+    expect(await readFile(join(root, 'Cache', 'Cache_Data', 'data_0'), 'utf8')).toBe('browser cache')
+    expect(existsSync(join(root, 'Local Storage', 'leveldb', '000003.log'))).toBe(true)
+    expect(existsSync(join(root, 'runtime'))).toBe(false)
+  })
+
   it('always keeps the launcher log', async () => {
     await resetLauncherData(root, { deleteWorlds: false })
     expect(await readFile(join(root, 'launcher', 'logs', 'launcher.log'), 'utf8')).toBe('keep the log')

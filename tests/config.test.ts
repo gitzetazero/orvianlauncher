@@ -16,9 +16,9 @@ describe('loadConfig', () => {
     expect(config.dataDir).toBeUndefined()
     expect(config.manifestUrl).toBeUndefined()
     expect(config.devServerUrl).toBeUndefined()
-    expect(config.packRepo).toBe('zzyren/orvianmodpack')
+    expect(config.packRepo).toBe('gitzetazero/orvianmodpack')
     expect(config.server.address).toBe('payo.exaroton.me')
-    expect(config.minSplashMs).toBe(5000)
+    expect(config.minSplashMs).toBe(0)
   })
 
   it('applies overrides when running unpackaged', () => {
@@ -35,7 +35,7 @@ describe('loadConfig', () => {
 
   it('rejects malformed overrides instead of using them', () => {
     const config = loadConfig(false, { ORVIAN_PACK_REPO: 'not a repo', ORVIAN_SERVER: 'bad host:99999', ORVIAN_MANIFEST_URL: 'file:///etc/passwd' })
-    expect(config.packRepo).toBe('zzyren/orvianmodpack')
+    expect(config.packRepo).toBe('gitzetazero/orvianmodpack')
     expect(config.server.address).toBe('payo.exaroton.me')
     expect(config.manifestUrl).toBeUndefined()
   })

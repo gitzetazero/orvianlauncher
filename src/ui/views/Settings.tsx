@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { FolderOpen, HardDrive, LogIn, LogOut, Power, RefreshCw, Trash2, Wrench, ClipboardCopy } from 'lucide-react'
+import { ClipboardCopy, Cpu, FolderOpen, Gamepad2, HardDrive, LogIn, LogOut, MemoryStick, Package, Power, RefreshCw, Settings2, Stethoscope, Trash2, UserRound, Wrench } from 'lucide-react'
+import { GAME_SIZE_LIMITS, parseJvmArgs } from '../../shared/gameOptions'
 import type { LauncherState } from '../../shared/launcher-state'
 import { formatBytes } from '../../shared/format'
 import { Button } from '../components/Button'
+import { cx } from '../components/cx'
 import { ConfirmDialog } from '../components/Dialog'
 import { Field } from '../components/Field'
 import { useToast } from '../components/Toast'
@@ -10,13 +12,27 @@ import { useAsyncAction } from '../hooks/useAsyncAction'
 import { useLauncherActions } from '../hooks/useLauncherActions'
 import { ipcErrorMessage } from '../ipcError'
 
-function Section({ title, description, children }: { title: string; description?: ReactNode; children: ReactNode }) {
-  const id = `section-${title.toLowerCase().replace(/[^a-z]+/g, '-')}`
+type SectionId = 'memoria' | 'juego' | 'modpack' | 'cuenta' | 'diagnostico' | 'avanzado'
+
+const SECTIONS: Array<{ id: SectionId; label: string; icon: ReactNode }> = [
+  { id: 'memoria', label: 'Memoria', icon: <MemoryStick size={16} strokeWidth={1.75} aria-hidden="true" /> },
+  { id: 'juego', label: 'Juego', icon: <Gamepad2 size={16} strokeWidth={1.75} aria-hidden="true" /> },
+  { id: 'modpack', label: 'Modpack', icon: <Package size={16} strokeWidth={1.75} aria-hidden="true" /> },
+  { id: 'cuenta', label: 'Cuenta', icon: <UserRound size={16} strokeWidth={1.75} aria-hidden="true" /> },
+  { id: 'diagnostico', label: 'Diagnóstico', icon: <Stethoscope size={16} strokeWidth={1.75} aria-hidden="true" /> },
+  { id: 'avanzado', label: 'Avanzado', icon: <Settings2 size={16} strokeWidth={1.75} aria-hidden="true" /> }
+]
+
+function Section({ id, title, description, children }: { id: SectionId; title: string; description?: ReactNode; children: ReactNode }) {
+  const icon = SECTIONS.find((section) => section.id === id)?.icon
   return (
-    <section className="settings-section" aria-labelledby={id}>
+    <section className="settings-section" id={`ajustes-${id}`} aria-labelledby={`ajustes-${id}-title`} tabIndex={-1}>
       <div className="settings-section-head">
-        <h2 id={id} className="settings-section-title">{title}</h2>
-        {description && <p className="settings-section-desc">{description}</p>}
+        <span className="settings-section-icon" aria-hidden="true">{icon}</span>
+        <div>
+          <h2 id={`ajustes-${id}-title`} className="settings-section-title">{title}</h2>
+          {description && <p className="settings-section-desc">{description}</p>}
+        </div>
       </div>
       <div className="settings-section-body">{children}</div>
     </section>
@@ -25,17 +41,134 @@ function Section({ title, description, children }: { title: string; description?
 
 export default function Settings({ state }: { state: LauncherState }) {
   const idle = !['installing', 'repairing', 'launching', 'running', 'signing-in', 'booting'].includes(state.phase.kind)
+  const [active, setActive] = useActiveSection()
+
+  const jump = (id: SectionId): void => {
+    setActive(id)
+    const target = document.getElementById(`ajustes-${id}`)
+    target?.scrollIntoView({ block: 'start', behavior: 'smooth' })
+    target?.focus({ preventScroll: true })
+  }
+
   return (
     <div className="view view-enter">
-      <div className="view-inner">
-        <h1 className="view-title">Ajustes</h1>
-        <MemorySection state={state} />
-        <ModpackSection state={state} idle={idle} />
-        <AccountSection state={state} idle={idle} />
-        <DiagnosticsSection />
-        <AdvancedSection idle={idle} />
+      <div className="settings-layout">
+        <nav className="settings-nav" aria-label="Secciones de ajustes">
+          <h1 className="view-title">Ajustes</h1>
+          <ul>
+            {SECTIONS.map((section) => (
+              <li key={section.id}>
+                <button type="button" className={cx('settings-nav-item', active === section.id && 'settings-nav-item-active')} aria-current={active === section.id ? 'location' : undefined} onClick={() => jump(section.id)}>
+                  {section.icon}
+                  <span>{section.label}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <div className="settings-body">
+          <MemorySection state={state} />
+          <GameSection state={state} idle={idle} />
+          <ModpackSection state={state} idle={idle} />
+          <AccountSection state={state} idle={idle} />
+          <DiagnosticsSection />
+          <AdvancedSection idle={idle} />
+        </div>
       </div>
     </div>
+  )
+}
+
+/**
+ * Which section the reader is on, so the side list can follow the scroll. The last sections can never
+ * reach the top of the view, so at the bottom of the page the last one wins.
+ */
+function useActiveSection(): [SectionId, (id: SectionId) => void] {
+  const [active, setActive] = useState<SectionId>('memoria')
+  useEffect(() => {
+    const root = document.getElementById('content')
+    if (!root) return
+    const update = (): void => {
+      if (root.scrollTop + root.clientHeight >= root.scrollHeight - 8) {
+        setActive(SECTIONS[SECTIONS.length - 1].id)
+        return
+      }
+      const top = root.getBoundingClientRect().top + 120
+      let current: SectionId = SECTIONS[0].id
+      for (const section of SECTIONS) {
+        const el = document.getElementById(`ajustes-${section.id}`)
+        if (el && el.getBoundingClientRect().top <= top) current = section.id
+      }
+      setActive(current)
+    }
+    root.addEventListener('scroll', update, { passive: true })
+    return () => root.removeEventListener('scroll', update)
+  }, [])
+  return [active, setActive]
+}
+
+// ─── Game ────────────────────────────────────────────────────────────────────
+
+function GameSection({ state, idle }: { state: LauncherState; idle: boolean }) {
+  const stored = state.gameOptions
+  const [width, setWidth] = useState(stored.width?.toString() ?? '')
+  const [height, setHeight] = useState(stored.height?.toString() ?? '')
+  const [fullscreen, setFullscreen] = useState(stored.fullscreen)
+  const [jvmArgs, setJvmArgs] = useState(stored.jvmArgs)
+  const [message, setMessage] = useState<string | null>(null)
+  const save = useAsyncAction()
+
+  const size = (value: string): number | null | 'invalid' => {
+    if (!value.trim()) return null
+    const n = Number(value)
+    return Number.isInteger(n) && n >= GAME_SIZE_LIMITS.min && n <= GAME_SIZE_LIMITS.max ? n : 'invalid'
+  }
+  const w = size(width)
+  const h = size(height)
+  const rangeError = `Usa un número entre ${GAME_SIZE_LIMITS.min} y ${GAME_SIZE_LIMITS.max}.`
+  const pairError = w !== 'invalid' && h !== 'invalid' && (w === null) !== (h === null) ? 'Indica el ancho y el alto, o deja los dos vacíos.' : null
+  const jvm = parseJvmArgs(jvmArgs)
+  const dirty = width !== (stored.width?.toString() ?? '') || height !== (stored.height?.toString() ?? '') || fullscreen !== stored.fullscreen || jvmArgs.trim() !== stored.jvmArgs
+  const canSave = dirty && w !== 'invalid' && h !== 'invalid' && !pairError && jvm.ok
+  const edit = (apply: () => void): void => {
+    apply()
+    setMessage(null)
+  }
+
+  return (
+    <Section id="juego" title="Juego" description="Cómo se abre Minecraft. Se aplica la próxima vez que pulses Jugar.">
+      <div className="form-grid">
+        <Field label="Ancho de la ventana" hint="En píxeles. Vacío: el tamaño de Minecraft." error={w === 'invalid' ? rangeError : null}>
+          {(props) => <input {...props} className="input" inputMode="numeric" placeholder="1280" value={width} disabled={fullscreen} onChange={(e) => edit(() => setWidth(e.target.value.replace(/\D/g, '')))} />}
+        </Field>
+        <Field label="Alto de la ventana" hint="En píxeles." error={h === 'invalid' ? rangeError : pairError}>
+          {(props) => <input {...props} className="input" inputMode="numeric" placeholder="720" value={height} disabled={fullscreen} onChange={(e) => edit(() => setHeight(e.target.value.replace(/\D/g, '')))} />}
+        </Field>
+      </div>
+      <label className="check-row">
+        <input type="checkbox" checked={fullscreen} onChange={(e) => edit(() => setFullscreen(e.target.checked))} />
+        <span>Abrir a pantalla completa</span>
+      </label>
+      <Field label="Argumentos de Java" hint="Solo si sabes lo que haces, separados por espacios; por ejemplo -XX:+UseG1GC. La memoria se ajusta en la sección Memoria." error={jvm.ok ? null : jvm.error}>
+        {(props) => <textarea {...props} className="input textarea mono" rows={2} spellCheck={false} placeholder="-XX:+UseG1GC -XX:MaxGCPauseMillis=50" value={jvmArgs} onChange={(e) => edit(() => setJvmArgs(e.target.value))} />}
+      </Field>
+      <div className="button-row">
+        <Button
+          variant="primary"
+          icon={<Cpu size={16} strokeWidth={1.75} aria-hidden="true" />}
+          loading={save.pending}
+          disabled={!canSave || !idle}
+          onClick={() => void save.run(async () => {
+            await window.orvian.setGameOptions({ width: w === 'invalid' ? null : w, height: h === 'invalid' ? null : h, fullscreen, jvmArgs: jvmArgs.trim() })
+            setMessage('Opciones del juego guardadas.')
+          })}
+        >
+          Guardar opciones
+        </Button>
+        {!idle && <span className="side-note">Espera a que termine la partida o la instalación.</span>}
+      </div>
+      <p className="saved-note" role="status">{message ?? ''}</p>
+    </Section>
   )
 }
 
@@ -77,7 +210,7 @@ function MemorySection({ state }: { state: LauncherState }) {
   }
 
   return (
-    <Section title="Memoria" description="Memoria máxima para Minecraft. 6 GB suele ser suficiente; más no siempre es mejor.">
+    <Section id="memoria" title="Memoria" description="Memoria máxima para Minecraft. 6 GB suele ser suficiente; más no siempre es mejor.">
       <Field label="Memoria RAM" error={error} hint={`Entre ${ramMin} y ${ramMax} GB según la memoria de este equipo.`}>
         {(props) => (
           <div className="ram-control">
@@ -111,7 +244,7 @@ function ModpackSection({ state, idle }: { state: LauncherState; idle: boolean }
     : 'Todavía no hay un modpack instalado.'
 
   return (
-    <Section title="Modpack" description={description}>
+    <Section id="modpack" title="Modpack" description={description}>
       <div className="button-row">
         <Button
           icon={<RefreshCw size={16} strokeWidth={1.75} aria-hidden="true" />}
@@ -194,7 +327,7 @@ function AccountSection({ state, idle }: { state: LauncherState; idle: boolean }
   const signedIn = state.account !== null
 
   return (
-    <Section title="Cuenta" description={signedIn ? <>Conectado como <strong translate="no">{state.account?.name}</strong>.</> : 'Inicia sesión para verificar tu licencia de Minecraft Java.'}>
+    <Section id="cuenta" title="Cuenta" description={signedIn ? <>Conectado como <strong translate="no">{state.account?.name}</strong>.</> : 'Inicia sesión para verificar tu licencia de Minecraft Java.'}>
       {signedIn ? (
         <Button
           variant="danger"
@@ -222,7 +355,7 @@ function AccountSection({ state, idle }: { state: LauncherState; idle: boolean }
 function DiagnosticsSection() {
   const toast = useToast()
   return (
-    <Section title="Diagnóstico" description="Si algo falla, copia el diagnóstico y envíalo a quien administra el servidor. No contiene contraseñas ni tu nombre de usuario de Windows.">
+    <Section id="diagnostico" title="Diagnóstico" description="Si algo falla, copia el diagnóstico y envíalo a quien administra el servidor. No contiene contraseñas ni tu nombre de usuario de Windows.">
       <div className="button-row">
         <Button
           icon={<ClipboardCopy size={16} strokeWidth={1.75} aria-hidden="true" />}
@@ -271,7 +404,7 @@ function AdvancedSection({ idle }: { idle: boolean }) {
   }
 
   return (
-    <Section title="Avanzado">
+    <Section id="avanzado" title="Avanzado" description="Acciones que afectan a toda la instalación.">
       <div className="button-row">
         <Button variant="danger" icon={<Trash2 size={16} strokeWidth={1.75} aria-hidden="true" />} disabled={!idle} onClick={() => setResetOpen(true)}>Restablecer el launcher</Button>
         <Button icon={<Power size={16} strokeWidth={1.75} aria-hidden="true" />} onClick={quit}>Salir del launcher</Button>

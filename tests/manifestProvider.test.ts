@@ -62,8 +62,8 @@ describe('ManifestProvider', () => {
     await rm(root, { recursive: true, force: true })
   })
 
-  const DIRECT = 'https://github.com/zzyren/orvianmodpack/releases/latest/download/orvian-manifest.json'
-  const API = 'https://api.github.com/repos/zzyren/orvianmodpack/releases/latest'
+  const DIRECT = 'https://github.com/gitzetazero/orvianmodpack/releases/latest/download/orvian-manifest.json'
+  const API = 'https://api.github.com/repos/gitzetazero/orvianmodpack/releases/latest'
 
   it('fetches, validates, normalises and caches the manifest on disk', async () => {
     routes.push([DIRECT, () => json(manifest('1.0.5', [file('overrides/mods/a.jar')]))])

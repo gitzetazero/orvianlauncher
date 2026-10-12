@@ -1,15 +1,21 @@
 import { useEffect, useState } from 'react'
 import { Dialog, ConfirmDialog } from './components/Dialog'
 import { Button } from './components/Button'
+import { WifiOff } from 'lucide-react'
+import { NavRail, type ViewId } from './components/NavRail'
 import { ProgressBar } from './components/ProgressBar'
-import { StatusBar } from './components/StatusBar'
-import { TitleBar, type ViewId } from './components/TitleBar'
+import { TitleBar } from './components/TitleBar'
 import { ToastProvider } from './components/Toast'
+import { cx } from './components/cx'
 import { useLauncherState } from './hooks/useLauncherState'
 import type { LauncherState } from '../shared/launcher-state'
 import Admin from './views/Admin'
+import Gallery from './views/Gallery'
 import Home from './views/Home'
+import Locker from './views/Locker'
 import Mods from './views/Mods'
+import Packs from './views/Packs'
+import SkinEditor from './views/SkinEditor'
 import Settings from './views/Settings'
 
 export default function App() {
@@ -37,22 +43,43 @@ function Shell() {
     if (view === 'admin' && !isAdmin) setView('home')
   }, [view, isAdmin])
 
+  // After signing out, signing in again starts from the home screen
+  const hasAccount = state?.account != null
+  useEffect(() => {
+    if (!hasAccount) setView('home')
+  }, [hasAccount])
+
   if (!state) return <div className="app" aria-busy="true" />
 
-  const views: ViewId[] = isAdmin ? ['home', 'mods', 'settings', 'admin'] : ['home', 'mods', 'settings']
   const gameBusy = state.phase.kind === 'running' || state.phase.kind === 'launching'
+  // Without an account the launcher is only its sign-in screen, as in the reference
+  const signedOut = state.account === null
 
   return (
-    <div className="app">
+    <div className={cx('app', signedOut && 'app-signedout')}>
       <a href="#content" className="skip-link" onClick={(event) => { event.preventDefault(); document.getElementById('content')?.focus() }}>Saltar al contenido</a>
-      <TitleBar view={view} views={views} onNavigate={setView} />
-      <main id="content" className="app-main" tabIndex={-1}>
-        {view === 'home' && <Home state={state} />}
-        {view === 'mods' && <Mods gameBusy={gameBusy} />}
-        {view === 'settings' && <Settings state={state} />}
-        {view === 'admin' && isAdmin && <Admin state={state} />}
-      </main>
-      <StatusBar state={state} />
+      {!signedOut && <NavRail view={view} isAdmin={isAdmin} notifications={state.notifications} onNavigate={setView} />}
+      <div className="app-frame">
+        <TitleBar state={state} />
+        {state.pack.offline && (
+          <p className="offline-banner" role="status">
+            <WifiOff size={14} strokeWidth={2} aria-hidden="true" />
+            {state.pack.installed
+              ? `Sin conexión: no se pudo consultar el modpack. Puedes jugar con la versión instalada (v${state.pack.installed}).`
+              : 'Sin conexión: no se pudo consultar el modpack. Conéctate para instalar Orvian.'}
+          </p>
+        )}
+        <main id="content" className="app-main" tabIndex={-1}>
+          {(signedOut || view === 'home') && <Home state={state} onNavigate={setView} />}
+          {!signedOut && view === 'locker' && <Locker state={state} />}
+          {!signedOut && view === 'editor' && <SkinEditor />}
+          {!signedOut && view === 'mods' && <Mods gameBusy={gameBusy} />}
+          {!signedOut && view === 'packs' && <Packs gameBusy={gameBusy} />}
+          {!signedOut && view === 'gallery' && <Gallery />}
+          {!signedOut && view === 'settings' && <Settings state={state} />}
+          {!signedOut && view === 'admin' && isAdmin && <Admin state={state} />}
+        </main>
+      </div>
 
       <LauncherUpdateRequired state={state} />
       <ConfirmDialog

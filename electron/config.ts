@@ -11,21 +11,24 @@ export interface OrvianConfig {
   adminUuids: readonly string[]
   /** Public Minecraft launcher client ID (see security audit S5 before changing). */
   msClientId: string
+  /** Extra time the splash stays up (0: it closes as soon as the launcher is ready). */
   minSplashMs: number
   server: { name: string; address: string; port: number }
   /** Overrides, only honoured when the app is not packaged. */
   dataDir?: string
   manifestUrl?: string
   devServerUrl?: string
+  /** UI tests only: shows the launcher as signed in with this profile. Never honoured when packaged. */
+  testAccount?: { name: string; uuid: string }
 }
 
-const DEFAULTS: Omit<OrvianConfig, 'dataDir' | 'manifestUrl' | 'devServerUrl'> = {
+const DEFAULTS: Omit<OrvianConfig, 'dataDir' | 'manifestUrl' | 'devServerUrl' | 'testAccount'> = {
   mcVersion: '1.20.1',
   forgeVersion: '47.4.23',
-  packRepo: 'zzyren/orvianmodpack',
+  packRepo: 'gitzetazero/orvianmodpack',
   adminUuids: ['a8603c06e7474c44b0bde33067ab6627'],
   msClientId: '00000000402b5328',
-  minSplashMs: 5000,
+  minSplashMs: 0,
   server: { name: 'Orvian', address: 'payo.exaroton.me', port: 13133 }
 }
 
@@ -49,6 +52,8 @@ export function loadConfig(isPackaged: boolean, env: NodeJS.ProcessEnv = process
   if (env.ORVIAN_SPLASH_MS && /^\d{1,5}$/.test(env.ORVIAN_SPLASH_MS)) config.minSplashMs = Number(env.ORVIAN_SPLASH_MS)
   if (env.ORVIAN_SERVER) config.server = parseServer(env.ORVIAN_SERVER) ?? config.server
   if (env.VITE_DEV_SERVER_URL) config.devServerUrl = env.VITE_DEV_SERVER_URL
+  const testAccount = /^(\w{3,16}):([0-9a-f]{32})$/i.exec(env.ORVIAN_TEST_ACCOUNT ?? '')
+  if (testAccount) config.testAccount = { name: testAccount[1], uuid: testAccount[2].toLowerCase() }
   return config
 }
 

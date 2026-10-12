@@ -3,10 +3,12 @@ import { createRoot } from 'react-dom/client'
 import App from './ui/App'
 import Tray from './ui/views/Tray'
 import { ToastProvider } from './ui/components/Toast'
+import '@fontsource-variable/figtree/wght.css'
 import './ui/styles/tokens.css'
 import './ui/styles/base.css'
 import './ui/styles/components.css'
 import './ui/styles/views.css'
+import './ui/styles/editor.css'
 
 const root = createRoot(document.getElementById('root')!)
 

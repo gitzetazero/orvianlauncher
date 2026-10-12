@@ -33,6 +33,11 @@ Lo que las pruebas automáticas no pueden comprobar (necesita Windows, una cuent
 - [ ] Cerrar el launcher con Minecraft abierto: pide confirmación. «Reiniciar y actualizar» está desactivado
       mientras se juega.
 - [ ] Restablecer el launcher conserva los mundos; con el borrado explícito y la palabra escrita los elimina.
+- [ ] Tras instalar y tras actualizar, «Orvian Launcher» aparece al buscarlo en el menú Inicio y el icono de la
+      barra de tareas es el de Orvian.
+- [ ] Armario: se ve tu skin en 3D, se cambia una skin y una capa, y «Traer historial de NameMC» añade skins
+      con fecha (pasando la comprobación de Cloudflare si la pide).
+- [ ] Recursos: los resource packs y shaders del modpack aparecen bloqueados; los propios se activan y borran.
 - [ ] SmartScreen: el instalador no está firmado todavía (ver «Pendiente del propietario»).
 
 ## Publicar una versión del modpack
@@ -42,7 +47,7 @@ borrador → `modpack.zip` → `orvian-manifest.json` → publicar, así que nin
 
 - Si la nueva versión del pack necesita un launcher más nuevo, indica «Launcher mínimo». **Publica antes el
   launcher nuevo** y espera a que los jugadores lo reciban.
-- El token de GitHub debe ser *fine-grained*, limitado a `zzyren/orvianmodpack`, con **Contents: read and write**.
+- El token de GitHub debe ser *fine-grained*, limitado a `gitzetazero/orvianmodpack`, con **Contents: read and write**.
 
 ## Decisiones tomadas
 

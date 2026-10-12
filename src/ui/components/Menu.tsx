@@ -13,12 +13,18 @@ interface MenuProps {
   label: string
   trigger: ReactNode
   items: MenuItem[]
-  align?: 'start' | 'end'
+  align?: 'start' | 'end' | 'stretch'
+  /** Opens above the trigger instead of below it. */
+  placement?: 'bottom' | 'top'
   className?: string
+  /** Class of the trigger button; an icon button by default. */
+  triggerClassName?: string
+  /** True when `trigger` already shows the label as text, so no tooltip is needed. */
+  textTrigger?: boolean
 }
 
 /** Menu button (WAI-ARIA): arrows, Home/End, Esc and Tab behave as keyboard users expect. */
-export function Menu({ label, trigger, items, align = 'end', className }: MenuProps) {
+export function Menu({ label, trigger, items, align = 'end', placement = 'bottom', className, triggerClassName = 'icon-btn', textTrigger = false }: MenuProps) {
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
@@ -86,9 +92,9 @@ export function Menu({ label, trigger, items, align = 'end', className }: MenuPr
       <button
         ref={triggerRef}
         type="button"
-        className="icon-btn"
-        aria-label={label}
-        title={label}
+        className={triggerClassName}
+        aria-label={textTrigger ? undefined : label}
+        title={textTrigger ? undefined : label}
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={open ? menuId : undefined}
@@ -103,7 +109,7 @@ export function Menu({ label, trigger, items, align = 'end', className }: MenuPr
         {trigger}
       </button>
       {open && (
-        <div id={menuId} role="menu" aria-label={label} className={cx('menu-list', `menu-${align}`)} onKeyDown={onMenuKeyDown}>
+        <div id={menuId} role="menu" aria-label={label} className={cx('menu-list', `menu-${align}`, `menu-${placement}`)} onKeyDown={onMenuKeyDown}>
           {items.map((item, index) => (
             <button
               key={item.label}

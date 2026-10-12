@@ -1,0 +1,646 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-11T16:28:34.534Z",
+  "title": "Design System: Orvian Launcher",
+  "extensions": {
+    "colorMeta": {
+      "bg": {
+        "role": "neutral",
+        "displayName": "Plum Black",
+        "canonical": "oklch(11.1% 0.016 350.3)",
+        "tonalRamp": [
+          "#080305",
+          "#0c070a",
+          "#110b0f",
+          "#181116",
+          "#21171e",
+          "#33262f",
+          "#887c84",
+          "#e2dee1"
+        ]
+      },
+      "bg-raised": {
+        "role": "neutral",
+        "displayName": "Raised Plum",
+        "canonical": "oklch(13.8% 0.012 340.9)",
+        "tonalRamp": [
+          "#080305",
+          "#0c070a",
+          "#110b0f",
+          "#181116",
+          "#21171e",
+          "#33262f",
+          "#887c84",
+          "#e2dee1"
+        ]
+      },
+      "surface-1": {
+        "role": "neutral",
+        "displayName": "Surface 1",
+        "canonical": "oklch(15.9% 0.013 338.8)",
+        "tonalRamp": [
+          "#080305",
+          "#0c070a",
+          "#110b0f",
+          "#181116",
+          "#21171e",
+          "#33262f",
+          "#887c84",
+          "#e2dee1"
+        ]
+      },
+      "surface-2": {
+        "role": "neutral",
+        "displayName": "Surface 2",
+        "canonical": "oklch(18.9% 0.015 336.7)",
+        "tonalRamp": [
+          "#080305",
+          "#0c070a",
+          "#110b0f",
+          "#181116",
+          "#21171e",
+          "#33262f",
+          "#887c84",
+          "#e2dee1"
+        ]
+      },
+      "surface-3": {
+        "role": "neutral",
+        "displayName": "Surface 3",
+        "canonical": "oklch(22.0% 0.020 337.5)",
+        "tonalRamp": [
+          "#080305",
+          "#0c070a",
+          "#110b0f",
+          "#181116",
+          "#21171e",
+          "#33262f",
+          "#887c84",
+          "#e2dee1"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "rgba(230, 205, 225, 0.075)"
+      },
+      "border-strong": {
+        "role": "neutral",
+        "displayName": "Strong Hairline",
+        "canonical": "rgba(230, 205, 225, 0.15)"
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Bone",
+        "canonical": "oklch(90.5% 0.006 334.0)",
+        "tonalRamp": [
+          "#080305",
+          "#0c070a",
+          "#110b0f",
+          "#181116",
+          "#21171e",
+          "#33262f",
+          "#887c84",
+          "#e2dee1"
+        ]
+      },
+      "text-muted": {
+        "role": "neutral",
+        "displayName": "Mauve Mist",
+        "canonical": "oklch(71.0% 0.015 336.3)",
+        "tonalRamp": [
+          "#080305",
+          "#0c070a",
+          "#110b0f",
+          "#181116",
+          "#21171e",
+          "#33262f",
+          "#887c84",
+          "#e2dee1"
+        ]
+      },
+      "text-subtle": {
+        "role": "neutral",
+        "displayName": "Dusk Mauve",
+        "canonical": "oklch(60.0% 0.019 337.9)",
+        "tonalRamp": [
+          "#080305",
+          "#0c070a",
+          "#110b0f",
+          "#181116",
+          "#21171e",
+          "#33262f",
+          "#887c84",
+          "#e2dee1"
+        ]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Noctra Orchid",
+        "canonical": "oklch(60.5% 0.155 326.4)",
+        "tonalRamp": [
+          "#2a0f2b",
+          "#4d214e",
+          "#6f3471",
+          "#8a428c",
+          "#a051a2",
+          "#c97ccb",
+          "#dfaee0",
+          "#f4e0f4"
+        ]
+      },
+      "accent-hover": {
+        "role": "primary",
+        "displayName": "Lilac Lamp",
+        "canonical": "oklch(69.5% 0.140 326.1)",
+        "tonalRamp": [
+          "#2a0f2b",
+          "#4d214e",
+          "#6f3471",
+          "#8a428c",
+          "#a051a2",
+          "#c97ccb",
+          "#dfaee0",
+          "#f4e0f4"
+        ]
+      },
+      "accent-press": {
+        "role": "primary",
+        "displayName": "Deep Orchid",
+        "canonical": "oklch(51.3% 0.141 326.4)",
+        "tonalRamp": [
+          "#2a0f2b",
+          "#4d214e",
+          "#6f3471",
+          "#8a428c",
+          "#a051a2",
+          "#c97ccb",
+          "#dfaee0",
+          "#f4e0f4"
+        ]
+      },
+      "on-accent": {
+        "role": "primary",
+        "displayName": "White on Orchid",
+        "canonical": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#2a0f2b",
+          "#4d214e",
+          "#6f3471",
+          "#8a428c",
+          "#a051a2",
+          "#c97ccb",
+          "#dfaee0",
+          "#f4e0f4"
+        ]
+      },
+      "focus": {
+        "role": "primary",
+        "displayName": "Focus Lilac",
+        "canonical": "oklch(73.1% 0.130 325.9)",
+        "tonalRamp": [
+          "#2a0f2b",
+          "#4d214e",
+          "#6f3471",
+          "#8a428c",
+          "#a051a2",
+          "#c97ccb",
+          "#dfaee0",
+          "#f4e0f4"
+        ]
+      },
+      "launch": {
+        "role": "secondary",
+        "displayName": "Lagoon Turquoise",
+        "canonical": "oklch(72.6% 0.106 186.5)",
+        "tonalRamp": [
+          "#0b2a27",
+          "#154a45",
+          "#246c65",
+          "#1b6e67",
+          "#22827a",
+          "#2e9a90",
+          "#a6efe6",
+          "#dcfaf6"
+        ]
+      },
+      "on-launch": {
+        "role": "secondary",
+        "displayName": "White on Lagoon",
+        "canonical": "oklch(100.0% 0.000 89.9)",
+        "tonalRamp": [
+          "#0b2a27",
+          "#154a45",
+          "#246c65",
+          "#1b6e67",
+          "#22827a",
+          "#2e9a90",
+          "#a6efe6",
+          "#dcfaf6"
+        ]
+      },
+      "accent-soft": {
+        "role": "primary",
+        "displayName": "Orchid Wash",
+        "canonical": "rgba(176, 92, 178, 0.16)"
+      },
+      "accent-line": {
+        "role": "primary",
+        "displayName": "Orchid Hairline",
+        "canonical": "rgba(176, 92, 178, 0.5)"
+      },
+      "info": {
+        "role": "tertiary",
+        "displayName": "Logo Stone Steel",
+        "canonical": "oklch(76.3% 0.094 258.1)",
+        "tonalRamp": [
+          "#040b19",
+          "#1b2535",
+          "#32435b",
+          "#47628a",
+          "#5f83ba",
+          "#8ba7d0",
+          "#b8cbe7",
+          "#e1f0ff"
+        ]
+      },
+      "success": {
+        "role": "tertiary",
+        "displayName": "Signal Green",
+        "canonical": "oklch(72.9% 0.128 161.1)",
+        "tonalRamp": [
+          "#001105",
+          "#0e2c1e",
+          "#1c4d37",
+          "#1d724f",
+          "#209969",
+          "#6db792",
+          "#a7d6bc",
+          "#d5f8e5"
+        ]
+      },
+      "warning": {
+        "role": "tertiary",
+        "displayName": "Waking Orange",
+        "canonical": "oklch(75.0% 0.141 57.6)",
+        "tonalRamp": [
+          "#1a0500",
+          "#371e0a",
+          "#5e3717",
+          "#8e4f16",
+          "#bf6915",
+          "#d69462",
+          "#ecbf9f",
+          "#ffe7cf"
+        ]
+      },
+      "danger": {
+        "role": "tertiary",
+        "displayName": "Alarm Red",
+        "canonical": "oklch(68.8% 0.164 22.3)",
+        "tonalRamp": [
+          "#1e0102",
+          "#3c1818",
+          "#672e2d",
+          "#9c3f3f",
+          "#d15254",
+          "#e68582",
+          "#f8b6b2",
+          "#ffe0dd"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "launch": {
+        "displayName": "Launch",
+        "purpose": "The uppercase word on the launch block only; 22px for long labels and the sign-in tone."
+      },
+      "display": {
+        "displayName": "Display",
+        "purpose": "The sign-in wordmark."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "The home greeting."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "View titles in spaced capitals; dialog titles use the same size in sentence case."
+      },
+      "title-sm": {
+        "displayName": "Title small",
+        "purpose": "Settings section titles, side-column tabs, news card titles."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Default text with tabular numerals; paragraphs capped at 65ch."
+      },
+      "body-sm": {
+        "displayName": "Body small",
+        "purpose": "Leads, dialog descriptions, control text."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Section labels, the h2 of their own block, in spaced capitals."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Code, tokens and crash codes only."
+      }
+    },
+    "gradients": [
+      {
+        "name": "accent-gradient",
+        "value": "linear-gradient(180deg, #f2d08f 0%, #a051a2 52%, #cf9f4a 100%)",
+        "purpose": "Primary buttons."
+      },
+      {
+        "name": "launch-gradient",
+        "value": "linear-gradient(180deg, #2e9a90 0%, #22827a 55%, #1b6e67 100%)",
+        "purpose": "Ready launch block only."
+      },
+      {
+        "name": "success-gradient",
+        "value": "linear-gradient(180deg, #62d39f 0%, #45b07f 100%)",
+        "purpose": "Install fill that grows across the launch face."
+      },
+      {
+        "name": "capture-wash-hero",
+        "value": "linear-gradient(90deg, rgba(8,3,5,0.88) 0%, rgba(8,3,5,0.5) 45%, rgba(8,3,5,0.2) 100%), radial-gradient(60% 90% at 72% 25%, rgba(176,92,178,0.3), transparent 70%), linear-gradient(180deg, transparent 45%, #080305 100%)",
+        "purpose": "Over the player capture in the hero (image at brightness 0.7)."
+      },
+      {
+        "name": "capture-wash-card",
+        "value": "linear-gradient(90deg, rgba(17,11,15,0.96) 0%, rgba(17,11,15,0.78) 45%, rgba(17,11,15,0.25) 100%)",
+        "purpose": "Over the capture in news cards (image at brightness 0.75)."
+      },
+      {
+        "name": "login-tone",
+        "value": "linear-gradient(180deg, #ffffff 0%, #e9e9ec 100%)",
+        "purpose": "Launch block in the Microsoft sign-in tone."
+      },
+      {
+        "name": "scene",
+        "value": "radial-gradient(70% 60% at 25% 95%, rgba(176,92,178,0.3), transparent 62%), radial-gradient(55% 75% at 88% 0%, rgba(112,150,222,0.24), transparent 65%), radial-gradient(40% 50% at 60% 40%, rgba(140,110,200,0.1), transparent 70%), linear-gradient(180deg, #0e070c 0%, #130a10 55%, #080305 100%)",
+        "purpose": "Fallback hero backdrop when there are no captures: purple horizon, steel overhead."
+      },
+      {
+        "name": "block-floor",
+        "value": "linear-gradient(rgba(200,130,210,0.22) 1px, transparent 1px), linear-gradient(90deg, rgba(200,130,210,0.22) 1px, transparent 1px); background-size: 56px 56px; transform: perspective(520px) rotateX(64deg)",
+        "purpose": "Perspective block-grid floor under the hero and sign-in art."
+      }
+    ],
+    "shadows": [
+      {
+        "name": "float",
+        "value": "0 1px 0 rgba(255,255,255,0.04) inset, 0 10px 28px rgba(0,0,0,0.55), 0 2px 6px rgba(0,0,0,0.4)",
+        "purpose": "Rail tooltips."
+      },
+      {
+        "name": "pop",
+        "value": "0 24px 64px rgba(0,0,0,0.6), 0 4px 14px rgba(0,0,0,0.45)",
+        "purpose": "Dialogs, menus, notification panel."
+      },
+      {
+        "name": "launch-glow",
+        "value": "0 12px 36px rgba(70,188,177,0.28), 0 2px 8px rgba(70,188,177,0.2)",
+        "purpose": "Ready launch block."
+      },
+      {
+        "name": "accent-glow",
+        "value": "0 10px 34px rgba(176,92,178,0.3), 0 2px 8px rgba(176,92,178,0.2)",
+        "purpose": "Primary button hover."
+      },
+      {
+        "name": "tone-glow-success",
+        "value": "0 10px 34px rgba(79,192,141,0.16)",
+        "purpose": "Launch block while installing or running."
+      },
+      {
+        "name": "lit-edge",
+        "value": "0 1px 0 rgba(255,255,255,0.3) inset",
+        "purpose": "Top highlight on lit fills."
+      },
+      {
+        "name": "focus-ring-input",
+        "value": "0 0 0 3px rgba(176,92,178,0.16)",
+        "purpose": "Input focus wash."
+      }
+    ],
+    "motion": [
+      {
+        "name": "dur-instant",
+        "value": "80ms",
+        "purpose": "Press nudges."
+      },
+      {
+        "name": "dur-fast",
+        "value": "120ms",
+        "purpose": "Hover colour changes."
+      },
+      {
+        "name": "dur-base",
+        "value": "180ms",
+        "purpose": "Switches, chevrons, glows."
+      },
+      {
+        "name": "dur-slow",
+        "value": "260ms",
+        "purpose": "View entry, dialogs, tab underline."
+      },
+      {
+        "name": "dur-slower",
+        "value": "420ms",
+        "purpose": "Staggered entrances, install fill."
+      },
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Default easing for state changes."
+      },
+      {
+        "name": "ease-in-out",
+        "value": "cubic-bezier(0.65, 0, 0.35, 1)",
+        "purpose": "Looping breathe and emblem float."
+      },
+      {
+        "name": "stagger",
+        "value": "55ms per item",
+        "purpose": "Hero and list entrances settle in sequence from 35-40% opacity."
+      },
+      {
+        "name": "floor-drift",
+        "value": "40s linear infinite",
+        "purpose": "The block floor slowly scrolls toward the viewer."
+      },
+      {
+        "name": "sheen",
+        "value": "900ms ease-out on hover",
+        "purpose": "Light passing over the ready launch block."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "window-min",
+        "value": "1120px"
+      },
+      {
+        "name": "compact",
+        "value": "1200px"
+      },
+      {
+        "name": "medium",
+        "value": "1360px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Orchid gradient action with a lit top edge; glows purple on hover.",
+      "html": "<button class=\"ds-btn-primary\">Instalar</button>",
+      "css": ".ds-btn-primary{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:0 16px;border:1px solid rgba(235,190,240,0.28);border-radius:6px;background:linear-gradient(180deg,#a051a2 0%,#a051a2 100%);color:#ffffff;font:600 13px/1 'Figtree Variable', 'Segoe UI', system-ui, sans-serif;box-shadow:0 1px 0 rgba(255,255,255,0.3) inset,0 2px 10px rgba(176,92,178,0.18);cursor:pointer;transition:background-color 120ms cubic-bezier(0.22, 1, 0.36, 1),box-shadow 180ms cubic-bezier(0.22, 1, 0.36, 1),transform 80ms cubic-bezier(0.22, 1, 0.36, 1)}.ds-btn-primary:hover{background:#c97ccb;box-shadow:0 1px 0 rgba(255,255,255,0.3) inset,0 10px 34px rgba(176,92,178,0.3),0 2px 8px rgba(176,92,178,0.2)}.ds-btn-primary:active{background:#8a428c;transform:translateY(1px)}.ds-btn-primary:focus-visible{outline:2px solid #d28ad4;outline-offset:2px}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Raised neutral action on surface-2.",
+      "html": "<button class=\"ds-btn-secondary\">Reparar</button>",
+      "css": ".ds-btn-secondary{display:inline-flex;align-items:center;min-height:36px;padding:0 16px;border:1px solid rgba(230,205,225,0.15);border-radius:6px;background:#181116;color:#e2dee1;font:600 13px/1 'Figtree Variable', 'Segoe UI', system-ui, sans-serif;cursor:pointer;transition:background-color 120ms cubic-bezier(0.22, 1, 0.36, 1),border-color 120ms cubic-bezier(0.22, 1, 0.36, 1),transform 80ms cubic-bezier(0.22, 1, 0.36, 1)}.ds-btn-secondary:hover{background:#21171e;border-color:rgba(230,205,225,0.24)}.ds-btn-secondary:active{transform:translateY(1px)}.ds-btn-secondary:focus-visible{outline:2px solid #d28ad4;outline-offset:2px}"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Quiet action; fills surface-2 on hover.",
+      "html": "<button class=\"ds-btn-ghost\">Cancelar</button>",
+      "css": ".ds-btn-ghost{display:inline-flex;align-items:center;min-height:36px;padding:0 16px;border:1px solid transparent;border-radius:6px;background:transparent;color:#a89ea5;font:600 13px/1 'Figtree Variable', 'Segoe UI', system-ui, sans-serif;cursor:pointer;transition:background-color 120ms cubic-bezier(0.22, 1, 0.36, 1),color 120ms cubic-bezier(0.22, 1, 0.36, 1)}.ds-btn-ghost:hover{background:#181116;color:#e2dee1}.ds-btn-ghost:focus-visible{outline:2px solid #d28ad4;outline-offset:2px}"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Field sunk to the bg ground; orchid hairline and wash on focus.",
+      "html": "<input class=\"ds-input\" placeholder=\"Buscar mods\" />",
+      "css": ".ds-input{width:280px;min-height:38px;padding:0 12px;border:1px solid rgba(230,205,225,0.15);border-radius:6px;background:#080305;color:#e2dee1;caret-color:#a051a2;font:400 13px 'Figtree Variable', 'Segoe UI', system-ui, sans-serif;transition:border-color 120ms cubic-bezier(0.22, 1, 0.36, 1),box-shadow 120ms cubic-bezier(0.22, 1, 0.36, 1)}.ds-input::placeholder{color:#887c84}.ds-input:hover{border-color:rgba(230,205,225,0.24)}.ds-input:focus,.ds-input:focus-visible{outline:none;border-color:rgba(176,92,178,0.38);box-shadow:0 0 0 3px rgba(176,92,178,0.12)}"
+    },
+    {
+      "name": "Rail",
+      "kind": "nav",
+      "refersTo": "rail-item",
+      "description": "Icon rail; the active room gets an orchid wash and an orchid light on the rail edge.",
+      "html": "<nav class=\"ds-rail\"><button class=\"ds-rail-item ds-rail-item-active\" aria-label=\"Inicio\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z\"/></svg></button><button class=\"ds-rail-item\" aria-label=\"Mods\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m12 2 9 5v10l-9 5-9-5V7z\"/><path d=\"m3 7 9 5 9-5M12 12v10\"/></svg></button><button class=\"ds-rail-item\" aria-label=\"Ajustes\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\"><circle cx=\"12\" cy=\"12\" r=\"3\"/><path d=\"M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1\"/></svg></button></nav>",
+      "css": ".ds-rail{display:flex;flex-direction:column;align-items:center;gap:8px;width:72px;padding:16px 0;border-right:1px solid rgba(230,205,225,0.075);background:#0c070a}.ds-rail-item{position:relative;display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid transparent;border-radius:10px;background:transparent;color:#887c84;cursor:pointer;transition:background-color 120ms cubic-bezier(0.22, 1, 0.36, 1),color 120ms cubic-bezier(0.22, 1, 0.36, 1),border-color 120ms cubic-bezier(0.22, 1, 0.36, 1)}.ds-rail-item:hover{background:#181116;color:#e2dee1}.ds-rail-item-active,.ds-rail-item-active:hover{border-color:rgba(176,92,178,0.38);background:rgba(176,92,178,0.12);color:#a051a2}.ds-rail-item-active::before{content:'';position:absolute;top:10px;bottom:10px;left:-15px;width:3px;border-radius:0 3px 3px 0;background:#a051a2}.ds-rail-item:focus-visible{outline:2px solid #d28ad4;outline-offset:2px}"
+    },
+    {
+      "name": "Chip",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Pill filter; orchid hairline on hover.",
+      "html": "<button class=\"ds-chip\">Optimización</button>",
+      "css": ".ds-chip{height:28px;padding:0 12px;border:1px solid rgba(230,205,225,0.075);border-radius:999px;background:#110b0f;color:#a89ea5;font:600 12px 'Figtree Variable', 'Segoe UI', system-ui, sans-serif;cursor:pointer;transition:border-color 120ms cubic-bezier(0.22, 1, 0.36, 1),color 120ms cubic-bezier(0.22, 1, 0.36, 1)}.ds-chip:hover{border-color:rgba(176,92,178,0.38);color:#e2dee1}.ds-chip:focus-visible{outline:2px solid #d28ad4;outline-offset:2px}"
+    },
+    {
+      "name": "Launch Block",
+      "kind": "custom",
+      "refersTo": "launch-ready",
+      "description": "The signature: an 84px face whose tone follows launcher state, over a dark options bar. Shown in the ready (turquoise) tone.",
+      "html": "<div class=\"ds-launch\"><button class=\"ds-play\"><span class=\"ds-play-label\">Jugar</span><span class=\"ds-play-sub\">Orvian v2.4 · servidor en línea</span></button><div class=\"ds-launch-bar\"><button class=\"ds-launch-more\">Más opciones</button></div></div>",
+      "css": ".ds-launch{display:grid;width:400px;font-family:'Figtree Variable', 'Segoe UI', system-ui, sans-serif}.ds-play{position:relative;display:grid;justify-items:center;gap:4px;min-height:84px;padding:16px 24px 12px;overflow:hidden;border:1px solid rgba(150,240,230,0.45);border-bottom:0;border-radius:6px 6px 0 0;background:linear-gradient(180deg,#2e9a90 0%,#22827a 55%,#1b6e67 100%);color:#ffffff;font-family:inherit;box-shadow:0 1px 0 rgba(255,255,255,0.28) inset,0 12px 36px rgba(70,188,177,0.28),0 2px 8px rgba(70,188,177,0.2);cursor:pointer;transition:filter 180ms cubic-bezier(0.22, 1, 0.36, 1),transform 80ms cubic-bezier(0.22, 1, 0.36, 1)}.ds-play:hover{filter:brightness(1.05)}.ds-play:active{transform:translateY(1px)}.ds-play:focus-visible{outline:2px solid #d28ad4;outline-offset:2px}.ds-play-label{font-size:34px;font-weight:800;letter-spacing:0.16em;line-height:40px;text-transform:uppercase}.ds-play-sub{font-size:12px;font-weight:600;letter-spacing:0.02em;opacity:0.78}.ds-launch-bar{display:flex;border:1px solid rgba(150,240,230,0.45);border-top-color:rgba(0,0,0,0.4);border-radius:0 0 6px 6px;background:rgba(8,3,5,0.9)}.ds-launch-more{flex:1;height:30px;border:0;background:transparent;color:#a89ea5;font:700 11px 'Figtree Variable', 'Segoe UI', system-ui, sans-serif;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:color 120ms cubic-bezier(0.22, 1, 0.36, 1),background-color 120ms cubic-bezier(0.22, 1, 0.36, 1)}.ds-launch-more:hover{background:rgba(255,255,255,0.03);color:#e2dee1}.ds-launch-more:focus-visible{outline:2px solid #d28ad4;outline-offset:2px}"
+    },
+    {
+      "name": "News Card",
+      "kind": "card",
+      "refersTo": "news-card",
+      "description": "A lit release tile with its version number as watermark art.",
+      "html": "<article class=\"ds-news\"><span class=\"ds-news-flag\">Nueva</span><span class=\"ds-news-ver\" aria-hidden=\"true\">2.4</span><div class=\"ds-news-body\"><h3 class=\"ds-news-title\">Orvian v2.4</h3><ul class=\"ds-news-notes\"><li>Nuevo bioma de montaña</li><li>Mejoras de rendimiento</li></ul></div></article>",
+      "css": ".ds-news{position:relative;display:flex;width:360px;min-height:168px;overflow:hidden;isolation:isolate;border:1px solid rgba(230,205,225,0.075);border-radius:10px;background:radial-gradient(70% 120% at 100% 100%,rgba(176,92,178,0.3),rgba(176,92,178,0.05) 55%,transparent 75%),linear-gradient(160deg,rgba(255,255,255,0.03),transparent 40%),#110b0f;font-family:'Figtree Variable', 'Segoe UI', system-ui, sans-serif;color:#e2dee1;transition:border-color 180ms cubic-bezier(0.22, 1, 0.36, 1)}.ds-news:hover{border-color:rgba(230,205,225,0.15)}.ds-news-ver{position:absolute;right:16px;bottom:-14px;z-index:-1;color:rgba(220,160,225,0.16);font-size:96px;font-weight:800;letter-spacing:-0.02em;line-height:1;transition:transform 420ms cubic-bezier(0.22, 1, 0.36, 1)}.ds-news:hover .ds-news-ver{transform:translateY(-4px)}.ds-news-flag{position:absolute;top:0;left:0;padding:4px 10px;border-radius:0 0 6px 0;background:#a051a2;color:#ffffff;font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase}.ds-news-body{display:flex;flex-direction:column;gap:8px;padding:32px 20px 16px}.ds-news-title{margin:0;font-size:16px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}.ds-news-notes{margin:0;padding-left:16px;color:#a89ea5;font-size:12px;line-height:18px}.ds-news-notes li::marker{color:#8a428c}"
+    },
+    {
+      "name": "Settings Panel",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Surface-1 section with a orchid-wash icon square.",
+      "html": "<section class=\"ds-panel\"><div class=\"ds-panel-head\"><span class=\"ds-panel-icon\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\"><rect x=\"4\" y=\"6\" width=\"16\" height=\"12\" rx=\"2\"/><path d=\"M8 10v4M12 10v4M16 10v4\"/></svg></span><div><h3 class=\"ds-panel-title\">Memoria</h3><p class=\"ds-panel-desc\">Cuánta RAM puede usar el juego.</p></div></div></section>",
+      "css": ".ds-panel{width:520px;padding:24px;border:1px solid rgba(230,205,225,0.075);border-radius:14px;background:#110b0f;color:#e2dee1;font-family:'Figtree Variable', 'Segoe UI', system-ui, sans-serif}.ds-panel-head{display:flex;gap:16px;align-items:flex-start}.ds-panel-icon{display:grid;flex:none;place-items:center;width:36px;height:36px;border-radius:6px;background:rgba(176,92,178,0.12);color:#a051a2}.ds-panel-title{margin:0;font-size:16px;font-weight:600;line-height:22px}.ds-panel-desc{margin:4px 0 0;color:#a89ea5;font-size:13px;line-height:20px}"
+    },
+    {
+      "name": "Section Label",
+      "kind": "custom",
+      "refersTo": "label",
+      "description": "Spaced-capital h2 that names its own block.",
+      "html": "<h2 class=\"ds-section-label\">Tu modpack</h2>",
+      "css": ".ds-section-label{margin:0;color:#e2dee1;font:700 11px/16px 'Figtree Variable', 'Segoe UI', system-ui, sans-serif;letter-spacing:0.12em;text-transform:uppercase}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Night Lobby",
+    "overview": "Orvian is the lobby you pass through before entering the world: a warm near-black room (an icon rail on the left, a slim top bar, a tabbed side column on the right) lit by Noctra purple lamps, with one turquoise door. The hero and the release cards hang the player's own latest screenshots like artwork, darkened and washed in purple, with a dark side so the text reads. When there are no screenshots, the room falls back to a CSS night sky (a purple glow at the horizon, steel overhead, a drifting block-grid floor in perspective).\n\nThe density is that of a desktop tool: 13–14px text, 36px controls, hairline borders, and short, sure transitions (120–260ms, ease-out). Purple carries the interface (selection, primary buttons, flags, focus). Turquoise is spent only on the launch block, so the product's one essential control is the coolest, brightest thing on screen. Information is steel blue.\n\nVoice comes from spaced capitals: section labels, view titles, the launch word, and the sign-in wordmark all use uppercase with wide tracking (0.12–0.3em), and body copy stays in sentence case.",
+    "keyCharacteristics": [
+      "Warm near-black surfaces with a plum cast (#080305 up to #21171e), all in the same hue.",
+      "Noctra purple is the interface accent. Turquoise belongs to the launch block alone.",
+      "Steel blue carries information: links, server and info icons, the overhead sky glow.",
+      "Figtree Variable throughout, bundled locally, with tabular numerals.",
+      "Spaced-capital labels and titles.",
+      "1px warm translucent hairlines instead of heavy dividers.",
+      "The player's captures as hero and card art under a purple wash, with a CSS scene as the fallback.",
+      "The launch block changes tone with launcher state."
+    ],
+    "rules": [
+      {
+        "name": "The One Door Rule",
+        "body": "Turquoise appears only on the launch block. Nothing else on screen may use it, so the way into the server is never in doubt.",
+        "section": "colors"
+      },
+      {
+        "name": "The Orchid Is the Interface Rule",
+        "body": "Purple means \"selected\" or \"act\" everywhere except the launch. Use the wash and hairline for selection and the full gradient only on primary buttons.",
+        "section": "colors"
+      },
+      {
+        "name": "The Steel Is Information Rule",
+        "body": "Steel blue labels and informs. It never fills a button.",
+        "section": "colors"
+      },
+      {
+        "name": "The Warm Ladder Rule",
+        "body": "Surfaces get lighter in small steps from bg to surface-3 and keep the same plum hue. Use a higher step, not a new colour, to bring a surface forward.",
+        "section": "colors"
+      },
+      {
+        "name": "The Spaced Capitals Rule",
+        "body": "Uppercase always comes with tracking: 0.12em for labels, 0.16em for the launch word, 0.24–0.3em for titles and the wordmark. Sentence-case text is never tracked out.",
+        "section": "typography"
+      },
+      {
+        "name": "The Label Is the Heading Rule",
+        "body": "A spaced-capital label names its own block as that block's heading. It never sits above another heading as an eyebrow.",
+        "section": "typography"
+      },
+      {
+        "name": "The Glow Is Light Rule",
+        "body": "A coloured shadow is light from a turquoise, purple or green source, never a decorative offset. Neutral elevation shadows are soft and black, and only for overlays.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep turquoise for the launch block alone, and purple for every other selected or actionable element.",
+      "Do build depth by stepping up the warm surface ladder (bg → surface-3) and outlining with 1px hairlines at 7.5% or 15%.",
+      "Do set section labels at 11px / 700 / 0.12em uppercase, and view titles at 20px / 600 / 0.3em uppercase.",
+      "Do put the player's own captures under a plum gradient and a purple wash before setting text on them, and fall back to the CSS scene when there are none.",
+      "Do let the launch block show state through tone: turquoise ready, white sign-in, green filling, green running, grey waiting.",
+      "Do use ease-out at 120–260ms for state changes, and respect prefers-reduced-motion."
+    ],
+    "donts": [
+      "Don't use turquoise anywhere outside the launch block.",
+      "Don't fill a button with steel blue or with a status colour. Info stays informational and danger stays a wash.",
+      "Don't put a spaced-capital label above a heading as an eyebrow. A label is the heading of its own block.",
+      "Don't track out sentence-case text, or set uppercase without tracking.",
+      "Don't use hard offset shadows or neutral drop shadows on resting cards. Shadows are for overlays and coloured light.",
+      "Don't introduce a second typeface. Weight and tracking carry the hierarchy."
+    ]
+  }
+}

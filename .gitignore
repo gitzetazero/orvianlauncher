@@ -12,5 +12,6 @@ pack/
 .cache/
 test-results/
 playwright-report/
-test-results/
-playwright-report/
+
+# Local cache of the Impeccable design hook
+.impeccable/hook.cache.json

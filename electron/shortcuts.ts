@@ -14,15 +14,21 @@ function insideDir(file: string, dir: string): boolean {
   return resolve(file).toLowerCase().startsWith(resolve(dir).toLowerCase() + '\\')
 }
 
-/** Shortcuts that point into this installation but carry the wrong name (e.g. "Electron.lnk"). */
+/**
+ * Shortcuts that point into this installation but carry the wrong name (e.g. "Electron.lnk"), and
+ * shortcuts that claim Orvian's app id but point to an executable that no longer exists. Windows
+ * takes the taskbar icon from a shortcut with the app's id, so a dead one shows a blank icon.
+ */
 function removeMisnamedShortcuts(folder: string, installDir: string): void {
   if (!existsSync(folder)) return
   for (const entry of readdirSync(folder)) {
     if (!entry.toLowerCase().endsWith('.lnk') || entry.toLowerCase() === SHORTCUT_NAME.toLowerCase()) continue
     const path = join(folder, entry)
     try {
-      const { target } = shell.readShortcutLink(path)
-      if (target && (insideDir(target, installDir) || sameFile(target, process.execPath))) {
+      const { target, appUserModelId } = shell.readShortcutLink(path)
+      const ours = target && (insideDir(target, installDir) || sameFile(target, process.execPath))
+      const deadWithOurId = appUserModelId === APP_USER_MODEL_ID && (!target || !existsSync(target))
+      if (ours || deadWithOurId) {
         unlinkSync(path)
         log.info('[Shortcuts] Acceso directo antiguo eliminado: %s', entry)
       }

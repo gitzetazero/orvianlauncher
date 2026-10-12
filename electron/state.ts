@@ -1,11 +1,15 @@
 import type { OrvianErrorPayload } from '../src/shared/errors'
 import {
+  DEFAULT_GAME_OPTIONS,
   derivePhase,
+  type GameOptions,
   isNewer,
   type InstallProgress,
+  type LauncherNotification,
   type LauncherState,
   type NewsItem,
   type PhaseFacts,
+  type PlayStats,
   type RetryKind,
   type ServerStatus,
   type UpdaterState
@@ -55,6 +59,9 @@ export class LauncherStore {
   private crash: PhaseFacts['crash'] = null
   private error: { error: OrvianErrorPayload; retry: RetryKind } | null = null
   private settings = { ramGb: 6, ramMin: 2, ramMax: 12 }
+  private gameOptions: GameOptions = { ...DEFAULT_GAME_OPTIONS }
+  private stats: PlayStats = { lastPlayedAt: null, totalSeconds: 0 }
+  private notifications: LauncherNotification[] = []
   private server: ServerStatus = { address: '', state: 'unknown' }
   private news: NewsItem[] = []
   private launcherUpdate: UpdaterState
@@ -93,6 +100,9 @@ export class LauncherStore {
         changelog: this.pack?.changelog ?? []
       },
       settings: this.settings,
+      gameOptions: this.gameOptions,
+      stats: this.stats,
+      notifications: this.notifications,
       server: this.server,
       news: this.news,
       launcherUpdate: this.launcherUpdate
@@ -147,6 +157,21 @@ export class LauncherStore {
 
   setSettings(settings: { ramGb: number; ramMin: number; ramMax: number }): void {
     this.settings = settings
+    this.changed()
+  }
+
+  setGameOptions(options: GameOptions): void {
+    this.gameOptions = options
+    this.changed()
+  }
+
+  setStats(stats: PlayStats): void {
+    this.stats = stats
+    this.changed()
+  }
+
+  setNotifications(items: LauncherNotification[]): void {
+    this.notifications = items
     this.changed()
   }
 

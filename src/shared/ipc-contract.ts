@@ -1,8 +1,8 @@
-import type { LauncherState } from './launcher-state'
+import type { GameOptions, LauncherState } from './launcher-state'
 
 /** Shape of `window.orvian`: the only bridge between the windows and the main process. */
 
-export type FolderKind = 'mods' | 'shaders' | 'resourcepacks' | 'logs' | 'game' | 'crash-reports'
+export type FolderKind = 'mods' | 'shaders' | 'resourcepacks' | 'screenshots' | 'logs' | 'game' | 'crash-reports'
 export type ModPlatform = 'modrinth' | 'curseforge'
 
 export interface InstalledMod {
@@ -29,6 +29,64 @@ export interface ModInstallResult {
   filename: string
   dependencies?: string[]
   failedDependencies?: string[]
+}
+
+export interface ScreenshotItem {
+  file: string
+  size: number
+  /** Epoch milliseconds, from the file's modification time. */
+  takenAt: number
+  /** Small preview served by the launcher (`orvian-media://`). */
+  thumbUrl: string
+  url: string
+}
+
+export type PackKind = 'resourcepacks' | 'shaderpacks'
+
+export interface PackItem {
+  name: string
+  size: number
+  modifiedAt: number
+  isFolder: boolean
+  enabled: boolean
+  /** Ships with the modpack: it cannot be removed, replaced or switched from the launcher. */
+  isOfficial: boolean
+}
+
+export interface PackList {
+  items: PackItem[]
+  /** False when the game has no file the launcher can use to switch packs (e.g. no shader mod config yet). */
+  canToggle: boolean
+}
+
+export type SkinVariant = 'classic' | 'slim'
+
+export interface SkinProfile {
+  name: string
+  skin: { url: string; variant: SkinVariant } | null
+  capes: Array<{ id: string; alias: string; url: string; active: boolean }>
+}
+
+export interface SkinLibraryItem {
+  id: string
+  name: string
+  variant: SkinVariant
+  url: string
+  addedAt: number
+  favorite: boolean
+}
+
+/** A skin the account wore while the launcher was watching. */
+export interface SkinHistoryItem {
+  hash: string
+  variant: SkinVariant
+  url: string
+  firstSeenAt: number
+  lastSeenAt: number
+  /** The skin the account wears now. */
+  current: boolean
+  /** Who knows this skin: this launcher and the public histories of LabyNet and Crafty.gg. */
+  sources: Array<'launcher' | 'crafty' | 'labynet' | 'namemc'>
 }
 
 export interface OrvianApi {
@@ -88,6 +146,54 @@ export interface OrvianApi {
   installModrinth(projectId: string): Promise<ModInstallResult>
   searchCurseForge(query: string): Promise<{ hits: ModSearchHit[] }>
   installCurseForge(modId: string | number): Promise<ModInstallResult>
+
+  // Advanced launch options
+  setGameOptions(options: GameOptions): Promise<{ ok: boolean }>
+
+  // Screenshots
+  listScreenshots(): Promise<ScreenshotItem[]>
+  openScreenshot(file: string): Promise<void>
+  copyScreenshot(file: string): Promise<void>
+  /** Moves the file to the recycle bin. */
+  deleteScreenshot(file: string): Promise<void>
+
+  // Resource packs and shaders
+  listPacks(kind: PackKind): Promise<PackList>
+  setPackEnabled(kind: PackKind, name: string, enabled: boolean): Promise<void>
+  /** Opens a file picker and copies the chosen .zip files into the folder. */
+  addPacks(kind: PackKind): Promise<{ added: string[]; skipped?: string[] }>
+  deletePack(kind: PackKind, name: string): Promise<void>
+
+  // Skins and capes (Locker)
+  getSkinProfile(): Promise<SkinProfile>
+  /** Public skin texture of any player (for avatars), or null when it cannot be found. */
+  getSkinTexture(uuid: string): Promise<string | null>
+  listSkins(): Promise<SkinLibraryItem[]>
+  /** Opens a file picker for a PNG skin and adds it to the library. */
+  importSkin(): Promise<{ canceled: boolean; item?: SkinLibraryItem }>
+  /** Copies the skin the account wears now into the library. */
+  saveCurrentSkin(): Promise<SkinLibraryItem>
+  updateSkin(id: string, patch: { name?: string; variant?: SkinVariant; favorite?: boolean }): Promise<SkinLibraryItem>
+  deleteSkin(id: string): Promise<void>
+  /** Uploads a library skin to the Minecraft account. */
+  applySkin(id: string): Promise<SkinProfile>
+  setCape(capeId: string | null): Promise<SkinProfile>
+  listSkinHistory(): Promise<SkinHistoryItem[]>
+  /** Current skin of any Minecraft player, for the editor. */
+  lookupSkin(name: string): Promise<{ name: string; url: string; variant: SkinVariant }>
+  /** Adds a skin drawn in the editor (PNG data URL) to the wardrobe. */
+  saveSkinPng(name: string, variant: SkinVariant, dataUrl: string): Promise<SkinLibraryItem>
+  /** Merges the public skin histories (LabyNet, Crafty.gg) of the signed-in account. */
+  syncSkinHistory(): Promise<void>
+  /** Opens the account's NameMC profile in a window (the player passes its check if asked) and adds the skins it lists. */
+  syncNameMcHistory(): Promise<{ found: number; added: number }>
+  applySkinHistory(hash: string): Promise<SkinProfile>
+  saveSkinHistory(hash: string): Promise<SkinLibraryItem>
+  deleteSkinHistory(hash: string): Promise<void>
+
+  // Notifications
+  markNotificationsRead(): Promise<void>
+  clearNotifications(): Promise<void>
 
   // Windows and application
   appReady(): Promise<void>

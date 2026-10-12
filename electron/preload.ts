@@ -31,7 +31,7 @@ const api = {
   cancelLogin: () => ipcRenderer.invoke('account:cancel-login'),
   logout: () => ipcRenderer.invoke('account:logout'),
   setRam: (gb: number) => ipcRenderer.invoke('settings:ram', gb),
-  openFolder: (kind: 'mods' | 'shaders' | 'resourcepacks' | 'logs' | 'game' | 'crash-reports') => ipcRenderer.invoke('folder:open', kind),
+  openFolder: (kind: 'mods' | 'shaders' | 'resourcepacks' | 'screenshots' | 'logs' | 'game' | 'crash-reports') => ipcRenderer.invoke('folder:open', kind),
   resetInstallation: (options: { deleteWorlds: boolean } = { deleteWorlds: false }) => ipcRenderer.invoke('launcher:reset', options),
   openExternal: (url: string) => ipcRenderer.invoke('url:open', url),
 
@@ -51,6 +51,44 @@ const api = {
   installModrinth: (projectId: string) => ipcRenderer.invoke('mods:install-modrinth', projectId),
   searchCurseForge: (query: string) => ipcRenderer.invoke('mods:search-curseforge', query),
   installCurseForge: (modId: string | number) => ipcRenderer.invoke('mods:install-curseforge', modId),
+
+  // ─── Advanced launch options ──────────────────────────────────────────────
+  setGameOptions: (options: { width: number | null; height: number | null; fullscreen: boolean; jvmArgs: string }) => ipcRenderer.invoke('settings:game', options),
+
+  // ─── Screenshots ──────────────────────────────────────────────────────────
+  listScreenshots: () => ipcRenderer.invoke('screenshots:list'),
+  openScreenshot: (file: string) => ipcRenderer.invoke('screenshots:open', file),
+  copyScreenshot: (file: string) => ipcRenderer.invoke('screenshots:copy', file),
+  deleteScreenshot: (file: string) => ipcRenderer.invoke('screenshots:delete', file),
+
+  // ─── Resource packs and shaders ───────────────────────────────────────────
+  listPacks: (kind: 'resourcepacks' | 'shaderpacks') => ipcRenderer.invoke('packs:list', kind),
+  setPackEnabled: (kind: 'resourcepacks' | 'shaderpacks', name: string, enabled: boolean) => ipcRenderer.invoke('packs:set-enabled', kind, name, enabled),
+  addPacks: (kind: 'resourcepacks' | 'shaderpacks') => ipcRenderer.invoke('packs:add', kind),
+  deletePack: (kind: 'resourcepacks' | 'shaderpacks', name: string) => ipcRenderer.invoke('packs:delete', kind, name),
+
+  // ─── Skins and capes ──────────────────────────────────────────────────────
+  getSkinProfile: () => ipcRenderer.invoke('skins:profile'),
+  getSkinTexture: (uuid: string) => ipcRenderer.invoke('skins:texture', uuid),
+  listSkins: () => ipcRenderer.invoke('skins:list'),
+  importSkin: () => ipcRenderer.invoke('skins:import'),
+  saveCurrentSkin: () => ipcRenderer.invoke('skins:save-current'),
+  updateSkin: (id: string, patch: { name?: string; variant?: 'classic' | 'slim'; favorite?: boolean }) => ipcRenderer.invoke('skins:update', id, patch),
+  deleteSkin: (id: string) => ipcRenderer.invoke('skins:delete', id),
+  applySkin: (id: string) => ipcRenderer.invoke('skins:apply', id),
+  setCape: (capeId: string | null) => ipcRenderer.invoke('skins:set-cape', capeId),
+  listSkinHistory: () => ipcRenderer.invoke('skins:history'),
+  lookupSkin: (name: string) => ipcRenderer.invoke('skins:lookup', name),
+  saveSkinPng: (name: string, variant: 'classic' | 'slim', dataUrl: string) => ipcRenderer.invoke('skins:save-png', name, variant, dataUrl),
+  syncSkinHistory: () => ipcRenderer.invoke('skins:history-sync'),
+  syncNameMcHistory: () => ipcRenderer.invoke('skins:history-namemc'),
+  applySkinHistory: (hash: string) => ipcRenderer.invoke('skins:history-apply', hash),
+  saveSkinHistory: (hash: string) => ipcRenderer.invoke('skins:history-save', hash),
+  deleteSkinHistory: (hash: string) => ipcRenderer.invoke('skins:history-delete', hash),
+
+  // ─── Notifications ────────────────────────────────────────────────────────
+  markNotificationsRead: () => ipcRenderer.invoke('notifications:mark-read'),
+  clearNotifications: () => ipcRenderer.invoke('notifications:clear'),
 
   // ─── Windows and application ──────────────────────────────────────────────
   appReady: () => ipcRenderer.invoke('app:ready'),

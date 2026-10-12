@@ -65,6 +65,7 @@ describe('game pipeline', () => {
       getSession: vi.fn(async () => ({ account: { accessToken: 'mc-token-123', name: 'Steve', uuid: 'u'.repeat(32), expiresAt: 0 }, stale: false })),
       getManifest: vi.fn(async () => manifest()),
       getRamGb: vi.fn(async () => 6),
+      getGameOptions: vi.fn(async () => ({ width: null, height: null, fullscreen: false, jvmArgs: '' })),
       emit: (e) => void events.push(e),
       onPackSynced: vi.fn(),
       onGameExit: vi.fn()

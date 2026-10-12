@@ -22,7 +22,7 @@ describe('redactSecrets', () => {
   })
 
   it('leaves ordinary text alone', () => {
-    const text = 'Descargando modpack v1.0.4 (34 MB) desde https://github.com/zzyren/orvianmodpack'
+    const text = 'Descargando modpack v1.0.4 (34 MB) desde https://github.com/gitzetazero/orvianmodpack'
     expect(redactSecrets(text)).toBe(text)
   })
 })

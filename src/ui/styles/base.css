@@ -1,19 +1,4 @@
-@font-face {
-  font-family: 'Outfit Variable';
-  font-style: normal;
-  font-display: swap;
-  font-weight: 100 900;
-  src: url('../assets/fonts/outfit-latin-ext-wght-normal.woff2') format('woff2-variations');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'Outfit Variable';
-  font-style: normal;
-  font-display: swap;
-  font-weight: 100 900;
-  src: url('../assets/fonts/outfit-latin-wght-normal.woff2') format('woff2-variations');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
+/* Figtree Variable (OFL) is bundled from @fontsource-variable/figtree, imported in src/main.tsx */
 
 *,
 *::before,
@@ -59,6 +44,12 @@ p {
   max-width: 65ch;
 }
 
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+}
+
 button,
 input,
 textarea,
@@ -69,6 +60,8 @@ select {
 
 button {
   cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 button:disabled {
@@ -89,6 +82,12 @@ textarea,
 
 a {
   color: var(--info);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+img {
+  -webkit-user-drag: none;
 }
 
 :focus-visible {
@@ -97,12 +96,40 @@ a {
 }
 
 ::selection {
-  background: var(--accent-soft);
+  background: rgba(176, 92, 178, 0.32);
+  color: var(--text);
 }
 
+input,
+textarea {
+  caret-color: var(--accent-hover);
+}
+
+/* Thin scrollbars in the shell's own tones */
 * {
   scrollbar-width: thin;
   scrollbar-color: var(--surface-3) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--surface-3);
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #33262f;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 .visually-hidden {
@@ -149,10 +176,11 @@ a {
   }
 }
 
+/* Entrances start already visible: they only settle into place */
 @keyframes view-in {
   from {
-    opacity: 0;
-    transform: translateY(4px);
+    opacity: 0.4;
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -162,7 +190,7 @@ a {
 
 @keyframes fade-up {
   from {
-    opacity: 0;
+    opacity: 0.35;
     transform: translateY(10px);
   }
   to {
@@ -174,7 +202,18 @@ a {
 @keyframes scale-in {
   from {
     opacity: 0;
-    transform: scale(0.94);
+    transform: scale(0.96) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
   }
   to {
     opacity: 1;
@@ -228,10 +267,36 @@ a {
   }
 }
 
-/* Children enter one after another; set --i on each (or via :nth-child) */
+@keyframes shimmer {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+
+/* The orbit around the wordmark: one slow turn, the launcher's signature motion */
+@keyframes orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/*
+ * An element that holds an open menu must sit above its later siblings: entrance animations
+ * give every staggered child its own stacking layer, which would otherwise paint over the menu.
+ */
+:is(.stagger, .hero-row, .hero-top, .signin-panel) > :has(.menu-list),
+.launch:has(.menu-list) {
+  position: relative;
+  z-index: var(--z-dropdown);
+}
+
+/* Children enter one after another; set --i on each */
 .stagger > * {
-  animation: fade-up var(--dur-slow) var(--ease-out) both;
-  animation-delay: calc(var(--i, 0) * 60ms);
+  animation: fade-up var(--dur-slower) var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 55ms);
 }
 
 .spin {

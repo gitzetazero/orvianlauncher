@@ -156,7 +156,7 @@ export default function Admin({ state }: { state: LauncherState }) {
       <div className="view-inner">
         <div>
           <h1 className="view-title">Publicar versión</h1>
-          <p className="view-lead">Sube una nueva versión del modpack a GitHub (<code translate="no">zzyren/orvianmodpack</code>). Los jugadores la recibirán al abrir el launcher.</p>
+          <p className="view-lead">Sube una nueva versión del modpack a GitHub (<code translate="no">gitzetazero/orvianmodpack</code>). Los jugadores la recibirán al abrir el launcher.</p>
         </div>
 
         {published && (
@@ -216,7 +216,7 @@ export default function Admin({ state }: { state: LauncherState }) {
         <section className="settings-section" aria-labelledby="admin-token">
           <div className="settings-section-head">
             <h2 id="admin-token" className="settings-section-title">3. Acceso a GitHub</h2>
-            <p className="settings-section-desc">Usa un token <em>fine-grained</em> limitado a <code translate="no">zzyren/orvianmodpack</code> con el permiso <strong>Contents: lectura y escritura</strong>. Se guarda cifrado y la interfaz no puede volver a leerlo.</p>
+            <p className="settings-section-desc">Usa un token <em>fine-grained</em> limitado a <code translate="no">gitzetazero/orvianmodpack</code> con el permiso <strong>Contents: lectura y escritura</strong>. Se guarda cifrado y la interfaz no puede volver a leerlo.</p>
           </div>
           <div className="settings-section-body form-stack">
             {token?.hasToken ? (

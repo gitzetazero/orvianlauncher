@@ -96,7 +96,7 @@ export function createMainWindow(options: { shouldHideOnClose: () => boolean }):
     height: 900,
     minWidth: 1120,
     minHeight: 720,
-    backgroundColor: '#0a0e13',
+    backgroundColor: '#080305',
     title: 'Orvian Launcher',
     frame: false,
     show: false,
@@ -177,7 +177,7 @@ export function createSplashWindow(): BrowserWindow | null {
   const splash = new BrowserWindow({
     width: 380,
     height: 480,
-    backgroundColor: '#0a0e13',
+    backgroundColor: '#080305',
     frame: false,
     alwaysOnTop: true,
     resizable: false,

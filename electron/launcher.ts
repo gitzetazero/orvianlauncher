@@ -5,7 +5,9 @@ import { join, resolve, sep } from 'node:path'
 import { z } from 'zod'
 import { planUpdate } from '../src/shared/integrity'
 import { OrvianError, toPayload, userMessage } from '../src/shared/errors'
-import type { LauncherState } from '../src/shared/launcher-state'
+import { normalizeGameOptions, parseJvmArgs } from '../src/shared/gameOptions'
+import type { LauncherState, NotificationKind } from '../src/shared/launcher-state'
+import { NotificationCenter, PlayTimeTracker } from './activity'
 import { getConfig, isAdminUuid } from './config'
 import { buildDiagnostics, readLogTail } from './diagnostics'
 import type { Ipc } from './ipc'
@@ -13,6 +15,8 @@ import { log } from './logger'
 import { AuthService } from './auth'
 import { isGameBusy, isMinecraftRunning, killMinecraftProcess, playGame, repairGame, type GameDeps, type PipelineResult } from './game/launch'
 import { registerAdminIpc } from './admin'
+import { registerLibraryIpc } from './library'
+import { registerSkinsIpc } from './skins'
 import { ManifestPoller, ManifestProvider, readInstalledVersion, type PollResult } from './modpack/manifest'
 import { discardPendingConfigs, listPendingConfigs, restorePendingConfigs } from './modpack/pending'
 import { NewsService } from './news'
@@ -30,6 +34,8 @@ export interface LauncherHooks {
 
 export interface Launcher {
   store: LauncherStore
+  /** Adds an entry to the player's notification list. */
+  notify: (kind: NotificationKind, title: string, body: string) => void
   /** Loads the account and the first pack information; the splash waits for it. */
   init: () => Promise<void>
 }
@@ -78,17 +84,26 @@ export function registerLauncher(ipc: Ipc, dataRoot: string, hooks: LauncherHook
     appVersion: app.getVersion(),
     broadcast: (state: LauncherState) => broadcast('launcher:state', state)
   })
+  const notifications = new NotificationCenter(join(dataRoot, 'launcher', 'notifications.json'), (items) => store.setNotifications(items))
+  const notify = (kind: NotificationKind, title: string, body: string): void => notifications.add(kind, title, body)
+  const playTime = new PlayTimeTracker(join(dataRoot, 'launcher', 'stats.json'), (stats) => store.setStats(stats))
 
   // ─── Facts the store needs ────────────────────────────────────────────────
 
   const loadSettings = async (): Promise<void> => {
-    const stored = await readJson<{ ramGb?: number }>(settingsFile, {})
+    const stored = await readJson<{ ramGb?: number; game?: unknown }>(settingsFile, {})
+    store.setGameOptions(normalizeGameOptions(stored.game))
     const limits = ramLimits()
     const ramGb = Number.isInteger(stored.ramGb) ? Math.min(limits.ramMax, Math.max(limits.ramMin, stored.ramGb as number)) : Math.min(DEFAULT_RAM_GB, limits.ramMax)
     store.setSettings({ ramGb, ...limits })
   }
 
   const loadAccount = async (): Promise<void> => {
+    const testAccount = getConfig().testAccount
+    if (testAccount) {
+      store.setAccount(testAccount, false)
+      return
+    }
     const account = await authService.loadAccount()
     store.setAccount(account ? { name: account.name, uuid: account.uuid } : null, account !== null && isAdminUuid(account.uuid))
   }
@@ -134,6 +149,7 @@ export function registerLauncher(ipc: Ipc, dataRoot: string, hooks: LauncherHook
       void publishPack(result.installed)
       if (result.hasUpdate && result.source === 'network') {
         log.info('[Modpack] Nueva versión disponible: %s (instalada: %s)', result.latest, result.installed)
+        notify('pack', `Modpack v${result.latest} disponible`, 'Se instalará la próxima vez que pulses Jugar.')
         if (!hooks.isUiVisible()) notifyUpdate(result.latest as string)
       }
     }
@@ -153,7 +169,17 @@ export function registerLauncher(ipc: Ipc, dataRoot: string, hooks: LauncherHook
   serverMonitor.start()
 
   // ─── Launcher self-update ─────────────────────────────────────────────────
-  bindUpdater({ onState: (state) => store.setLauncherUpdate(state), isGameRunning: isMinecraftRunning })
+  let notifiedLauncherVersion: string | undefined
+  bindUpdater({
+    onState: (state) => {
+      store.setLauncherUpdate(state)
+      if (state.status === 'available' && state.newVersion && state.newVersion !== notifiedLauncherVersion) {
+        notifiedLauncherVersion = state.newVersion
+        notify('launcher', `Orvian Launcher v${state.newVersion} disponible`, 'Descárgalo desde la barra superior.')
+      }
+    },
+    isGameRunning: isMinecraftRunning
+  })
 
   // ─── Game pipeline ────────────────────────────────────────────────────────
   const gameDeps: GameDeps = {
@@ -163,17 +189,26 @@ export function registerLauncher(ipc: Ipc, dataRoot: string, hooks: LauncherHook
     getSession: () => authService.getValidSession(),
     getManifest: async () => (await provider.get())?.manifest ?? null,
     getRamGb: async () => store.getState().settings.ramGb,
+    getGameOptions: async () => store.getState().gameOptions,
     emit: (event) => {
-      if (event.state === 'playing') store.markRunning()
-      else store.applyProgress(event)
+      if (event.state === 'playing') {
+        store.markRunning()
+        playTime.begin()
+      } else store.applyProgress(event)
     },
     onPackSynced: (version) => {
+      const previous = store.getState().pack.installed
       poller.note(version, version)
       store.setInstalledVersion(version)
+      if (previous !== version) notify('install', previous ? `Modpack actualizado a v${version}` : `Modpack v${version} instalado`, previous ? `Antes tenías la v${previous}.` : 'Ya puedes jugar en Orvian.')
     },
     onGameExit: (result) => {
+      playTime.end()
       store.endActivity()
-      if (result.kind === 'crash') store.setCrash({ exitCode: result.exitCode, summary: result.summary, reportPath: result.reportPath })
+      if (result.kind === 'crash') {
+        store.setCrash({ exitCode: result.exitCode, summary: result.summary, reportPath: result.reportPath })
+        notify('crash', 'Minecraft se cerró inesperadamente', result.summary || 'Revisa el informe de errores desde la pantalla de inicio.')
+      }
       // Updates may have been published while playing
       void refreshPack(true)
     }
@@ -190,7 +225,10 @@ export function registerLauncher(ipc: Ipc, dataRoot: string, hooks: LauncherHook
     const result = await run()
     if (!result.ok) {
       store.endActivity()
-      if (result.error?.code === 'AUTH_EXPIRED') store.expireSession()
+      if (result.error?.code === 'AUTH_EXPIRED') {
+        store.expireSession()
+        notify('account', 'Tu sesión ha caducado', 'Vuelve a iniciar sesión con Microsoft para jugar.')
+      }
       else if (result.error) store.setError(result.error, mode === 'repairing' ? 'repair' : 'play')
     } else if (mode === 'repairing') {
       store.endActivity()
@@ -263,6 +301,7 @@ export function registerLauncher(ipc: Ipc, dataRoot: string, hooks: LauncherHook
       const window = BrowserWindow.fromWebContents(event.sender) ?? undefined
       const account = await authService.loginWithMicrosoft(window)
       store.setAccount({ name: account.name, uuid: account.uuid }, isAdminUuid(account.uuid))
+      void skins.recordAccountSkin(account.uuid)
       return { ok: true, message: 'Sesión iniciada con éxito.' }
     } catch (error) {
       return { ok: false, message: userMessage(error), cancelled: toPayload(error).code === 'AUTH_CANCELLED' }
@@ -293,8 +332,24 @@ export function registerLauncher(ipc: Ipc, dataRoot: string, hooks: LauncherHook
     return { ok: true }
   })
 
-  ipc.handle('folder:open', [z.enum(['mods', 'shaders', 'resourcepacks', 'logs', 'game', 'crash-reports'])], async (_event, kind) => {
+  ipc.handle('settings:game', [z.object({ width: z.number().int().nullable(), height: z.number().int().nullable(), fullscreen: z.boolean(), jvmArgs: z.string().max(2000) })], async (_event, value) => {
+    const jvm = parseJvmArgs(value.jvmArgs)
+    if (!jvm.ok) throw new Error(jvm.error)
+    const options = normalizeGameOptions(value)
+    if ((value.width !== null || value.height !== null) && options.width === null) throw new Error('El tamaño de la ventana debe tener ancho y alto entre 320 y 7680 píxeles.')
+    const settings = await readJson<Record<string, unknown>>(settingsFile, {})
+    await mkdir(join(dataRoot, 'launcher'), { recursive: true })
+    await writeFile(settingsFile, JSON.stringify({ ...settings, game: options }, null, 2), 'utf8')
+    store.setGameOptions(options)
+    return { ok: true }
+  })
+
+  ipc.handle('notifications:mark-read', [], () => notifications.markAllRead())
+  ipc.handle('notifications:clear', [], () => notifications.clear())
+
+  ipc.handle('folder:open', [z.enum(['mods', 'shaders', 'resourcepacks', 'screenshots', 'logs', 'game', 'crash-reports'])], async (_event, kind) => {
     const folders: Record<typeof kind, string> = {
+      screenshots: join(instance, 'screenshots'),
       logs: join(dataRoot, 'launcher', 'logs'),
       game: instance,
       'crash-reports': join(instance, 'crash-reports'),
@@ -353,9 +408,10 @@ export function registerLauncher(ipc: Ipc, dataRoot: string, hooks: LauncherHook
     // Forget everything known about the pack and the account
     provider.forget()
     poller.note(null, null)
-    store.setAccount(null)
+    await loadAccount()
     store.dismissError()
     await loadSettings()
+    await Promise.all([notifications.load(), playTime.load()])
     await publishPack(null)
 
     log.info('[Reset] Launcher restablecido (mundos %s)', options.deleteWorlds ? 'eliminados' : 'conservados')
@@ -366,6 +422,13 @@ export function registerLauncher(ipc: Ipc, dataRoot: string, hooks: LauncherHook
         ? 'Launcher restablecido de fábrica. Todo ha quedado como nuevo.'
         : 'Launcher restablecido. Se conservaron tus mundos, capturas, resourcepacks, shaders y opciones.'
     }
+  })
+
+  registerLibraryIpc(ipc, { dataRoot, isGameRunning: isMinecraftRunning })
+  const skins = registerSkinsIpc(ipc, {
+    dataRoot,
+    getSession: () => authService.getValidSession(),
+    onSkinChanged: () => notify('skin', 'Skin actualizada', 'Los demás jugadores la verán al volver a entrar al servidor.')
   })
 
   registerAdminIpc(ipc, {
@@ -386,13 +449,16 @@ export function registerLauncher(ipc: Ipc, dataRoot: string, hooks: LauncherHook
 
   // ─── Start-up ─────────────────────────────────────────────────────────────
   const init = async (): Promise<void> => {
-    await Promise.all([loadSettings(), loadAccount()])
+    await Promise.all([loadSettings(), loadAccount(), notifications.load(), playTime.load()])
     store.markBooted()
+    // The skin history also catches changes made on minecraft.net since the last start
+    const account = store.getState().account
+    if (account && !getConfig().testAccount) void skins.recordAccountSkin(account.uuid)
     // The pack information and the server do not block the window: the store shows "checking" meanwhile.
     void refreshPack(false).then(() => serverMonitor.refresh())
   }
 
-  return { store, init }
+  return { store, notify, init }
 }
 
 function isIdle(kind: string): boolean {

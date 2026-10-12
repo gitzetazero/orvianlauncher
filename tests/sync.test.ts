@@ -152,9 +152,9 @@ describe('syncModpack', () => {
   describe('manifests published before the archive field existed', () => {
     it('derives the archive URL from the release tag and tries the tag without "v" as well', async () => {
       const { manifest, zip } = pack('1.0.5', { mods: { 'a.jar': 'A' }, configs: {} }, { withArchive: false })
-      const [withV, without] = archiveCandidates(manifest, 'zzyren/orvianmodpack')
-      expect(withV).toBe('https://github.com/zzyren/orvianmodpack/releases/download/v1.0.5/modpack.zip')
-      expect(without).toBe('https://github.com/zzyren/orvianmodpack/releases/download/1.0.5/modpack.zip')
+      const [withV, without] = archiveCandidates(manifest, 'gitzetazero/orvianmodpack')
+      expect(withV).toBe('https://github.com/gitzetazero/orvianmodpack/releases/download/v1.0.5/modpack.zip')
+      expect(without).toBe('https://github.com/gitzetazero/orvianmodpack/releases/download/1.0.5/modpack.zip')
       expect(archiveCandidates({ ...manifest, pack: { ...manifest.pack, version: 'v1.0.5' } } as OrvianManifest, 'o/r')[0]).toBe('https://github.com/o/r/releases/download/v1.0.5/modpack.zip')
 
       // point every file at the derived URL, as the old publisher did, and serve it only under the bare tag
@@ -171,7 +171,7 @@ describe('syncModpack', () => {
 
     it('does not fall back to "latest" when neither tag has an archive', async () => {
       const { manifest } = pack('1.0.5', { mods: { 'a.jar': 'A' }, configs: {} }, { withArchive: false })
-      const [withV] = archiveCandidates(manifest, 'zzyren/orvianmodpack')
+      const [withV] = archiveCandidates(manifest, 'gitzetazero/orvianmodpack')
       const requested: string[] = []
       vi.stubGlobal('fetch', async (input: string | URL) => (requested.push(String(input)), new Response('nope', { status: 404 })))
       await expect(run({ ...manifest, files: manifest.files.map((f) => ({ ...f, url: withV })) })).rejects.toMatchObject({ code: 'PACK_ARCHIVE_MISSING' })

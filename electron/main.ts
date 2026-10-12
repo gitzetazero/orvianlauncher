@@ -5,6 +5,7 @@ import { app, BrowserWindow, ipcMain, Menu, Tray } from 'electron'
 import { getConfig, initConfig } from './config'
 import { createIpc } from './ipc'
 import { initLogger, log } from './logger'
+import { registerMediaProtocol, registerMediaScheme } from './media'
 import { registerModsIpc } from './modManager'
 import { setUserAgent } from './net'
 import { isMinecraftRunning, killMinecraftProcess, registerLauncher } from './launcher'
@@ -25,9 +26,11 @@ import {
 // Application name shown in the Windows task manager and notifications
 app.setName('Orvian')
 if (process.platform === 'win32') {
-  app.setAppUserModelId('com.orvian.launcher')
+  // Development runs get their own id, so they never borrow (or break) the installed launcher's taskbar icon
+  app.setAppUserModelId(app.isPackaged && app.getAppPath().startsWith(process.resourcesPath) ? 'com.orvian.launcher' : 'com.orvian.launcher.dev')
 }
 Menu.setApplicationMenu(null)
+registerMediaScheme()
 /**
  * `app.isPackaged` is also true for the dev executable, because scripts/patch-electron-dev.cjs renames it to
  * Orvian.exe and Electron decides by the executable name. A real build runs from inside its own resources folder.
@@ -106,6 +109,7 @@ function start(): void {
 
   app.whenReady().then(async () => {
     lockDownSession()
+    registerMediaProtocol(dataRoot)
     if (isPackaged) repairShortcuts()
 
     // Splash first, before any work
@@ -120,7 +124,12 @@ function start(): void {
     const launcher = registerLauncher(ipc, dataRoot, {
       isUiVisible: () => [mainWindow, trayWindow].some((win) => win !== null && !win.isDestroyed() && win.isVisible() && !win.isMinimized())
     })
-    registerModsIpc(ipc, dataRoot)
+    registerModsIpc(ipc, dataRoot, {
+      onChange: (change) =>
+        change.kind === 'installed'
+          ? launcher.notify('mods', `${change.filename} instalado`, change.dependencies ? `Con ${change.dependencies} ${change.dependencies === 1 ? 'dependencia' : 'dependencias'}.` : 'Se cargará la próxima vez que juegues.')
+          : launcher.notify('mods', `${change.filename} eliminado`, 'Ya no se cargará al jugar.')
+    })
     registerUpdaterIpc(ipc)
 
     ipc.handle('window:minimize', [], () => {
@@ -171,7 +180,7 @@ function start(): void {
       .catch((err: unknown) => log.error('Fallo al iniciar el launcher: %s', String(err)))
       .then(() => setSplashStatus(splash, 'Abriendo el launcher…', 1))
 
-    // The renderer reports once mounted; keep the splash up for at least minSplashMs
+    // The renderer reports once mounted and the launcher has loaded: the splash closes right then
     let splashClosed = false
     const finishLoading = (): void => {
       if (splashClosed) return
@@ -191,7 +200,7 @@ function start(): void {
       setTimeout(finishLoading, delay)
     })
     // Safety net: if the renderer never reports, still open the launcher
-    setTimeout(finishLoading, getConfig().minSplashMs + 2500)
+    setTimeout(finishLoading, Math.max(getConfig().minSplashMs, 0) + 15_000)
 
     createWindow()
 

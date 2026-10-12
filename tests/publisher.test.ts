@@ -112,7 +112,7 @@ describe('buildManifestFromArchive', () => {
     const zip = buildZip(entries)
     const path = join(dir, 'export.zip')
     await writeFile(path, zip)
-    const manifest = await buildManifestFromArchive(path, { version, changelog: ['- uno'], repo: 'zzyren/orvianmodpack', minimumLauncher: '0.1.0' })
+    const manifest = await buildManifestFromArchive(path, { version, changelog: ['- uno'], repo: 'gitzetazero/orvianmodpack', minimumLauncher: '0.1.0' })
     return { manifest, zip }
   }
 
@@ -138,7 +138,7 @@ describe('buildManifestFromArchive', () => {
 
   it('points every file at the archive and records its hash and size', async () => {
     const { manifest, zip } = await build(prism())
-    const url = 'https://github.com/zzyren/orvianmodpack/releases/download/v1.0.5/modpack.zip'
+    const url = 'https://github.com/gitzetazero/orvianmodpack/releases/download/v1.0.5/modpack.zip'
     expect(manifest.archive).toEqual({ url, sha256: sha256(zip), size: zip.length })
     expect(manifest.files.every((f) => f.url === url)).toBe(true)
     expect(manifest.server).toMatchObject({ address: 'payo.exaroton.me', port: 13133 })

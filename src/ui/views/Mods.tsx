@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useState, type CSSProperties, type FormEvent } from 'react'
-import { Download, FolderOpen, Package, RotateCw, Search, ShieldCheck, Trash2, X } from 'lucide-react'
+import { Download, FolderOpen, Package, RotateCw, Search, ShieldCheck, Trash2 } from 'lucide-react'
 import type { InstalledMod, ModPlatform, ModSearchHit } from '../../shared/ipc-contract'
 import { formatBytes } from '../../shared/format'
 import { Badge } from '../components/Badge'
 import { Button, IconButton } from '../components/Button'
 import { ConfirmDialog } from '../components/Dialog'
 import { cx } from '../components/cx'
+import { SearchBox } from '../components/SearchBox'
 import { useToast } from '../components/Toast'
 import { ipcErrorMessage } from '../ipcError'
 
@@ -205,20 +206,6 @@ function InstalledList({ mods, loadError, onDelete, onExplore }: { mods: Install
         </ul>
       )}
     </>
-  )
-}
-
-function SearchBox({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
-  return (
-    <div className="search-box">
-      <Search size={16} strokeWidth={1.75} aria-hidden="true" className="search-icon" />
-      <input type="search" className="input search-input" aria-label={label} placeholder={`${label}…`} value={value} autoComplete="off" onChange={(e) => onChange(e.target.value)} />
-      {value && (
-        <IconButton label="Limpiar" className="search-clear" onClick={() => onChange('')}>
-          <X size={14} strokeWidth={1.75} aria-hidden="true" />
-        </IconButton>
-      )}
-    </div>
   )
 }
 

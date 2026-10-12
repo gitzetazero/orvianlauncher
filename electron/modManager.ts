@@ -93,7 +93,12 @@ async function readJsonFile<T>(path: string, fallback: T): Promise<T> {
   }
 }
 
-export function registerModsIpc(ipc: Ipc, dataRoot: string): void {
+export interface ModsHooks {
+  /** Called after a mod was installed (with its dependencies) or removed by the player. */
+  onChange?: (change: { kind: 'installed' | 'deleted'; filename: string; dependencies?: number }) => void
+}
+
+export function registerModsIpc(ipc: Ipc, dataRoot: string, hooks: ModsHooks = {}): void {
   const instance = join(dataRoot, 'instances', 'orvian')
   const modsDir = join(instance, 'mods')
   const statePath = join(instance, '.orvian', 'official-state.json')
@@ -167,6 +172,7 @@ export function registerModsIpc(ipc: Ipc, dataRoot: string): void {
       delete meta[filename]
       await saveMeta(meta)
     }
+    hooks.onChange?.({ kind: 'deleted', filename })
     return { ok: true }
   })
 
@@ -214,6 +220,7 @@ export function registerModsIpc(ipc: Ipc, dataRoot: string): void {
       const meta = await getMeta()
       meta[root.filename] = { dependencies: installed, projectId, platform: 'modrinth', versionId: root.versionId, sha1: root.sha1 }
       await saveMeta(meta)
+      hooks.onChange?.({ kind: 'installed', filename: root.filename, dependencies: installed.length })
       return { ok: true, filename: root.filename, dependencies: installed, failedDependencies: failed }
     })
   )
@@ -271,6 +278,7 @@ export function registerModsIpc(ipc: Ipc, dataRoot: string): void {
       const meta = await getMeta()
       meta[root.filename] = { dependencies: installed, projectId: id, platform: 'curseforge', versionId: root.versionId, sha1: root.sha1 }
       await saveMeta(meta)
+      hooks.onChange?.({ kind: 'installed', filename: root.filename, dependencies: installed.length })
       return { ok: true, filename: root.filename, dependencies: installed, failedDependencies: failed }
     })
   )
